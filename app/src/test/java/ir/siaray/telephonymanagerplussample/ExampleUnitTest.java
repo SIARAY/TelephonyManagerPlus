@@ -1,4 +1,4 @@
-package ir.siaray.telephonymanagerplus;
+package ir.siaray.telephonymanagerplussample;
 
 import org.junit.Test;
 

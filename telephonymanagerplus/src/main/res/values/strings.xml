@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TelephonyManagerPlus</string>
+    <string name="error_cell_location_value">CellLocation value is invalid.</string>
 </resources>

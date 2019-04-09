@@ -2,18 +2,16 @@ package ir.siaray.telephonymanagerplus;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
-
 import java.lang.reflect.Method;
 
+import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_GSM_CELL_ID_VALUE;
 import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_TELEPHONY_MANAGER_VALUE;
 
 public class Utils {
 
-    static String getTelephonyManagerValues(Context context, String methodName, int simSlotId) {
+    static String getTelephonyManagerValues(Context context,TelephonyManager telephony, String methodName, int simSlotId) {
         if (context == null)
             return DEFAULT_TELEPHONY_MANAGER_VALUE;
-        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         Class<?> telephonyClass;
         String reflectionMethod = null;
         String output = null;
@@ -89,6 +87,38 @@ public class Utils {
 
         return result;
 
+    }
+
+    interface CellLocationType {
+        int LOC = 0;
+        int CID = 1;
+        int PSC = 2;
+    }
+
+    static int getCellLocationValue(Context context, String cellLocation, int cellLocationType) {
+        Log.i("cellLoc: " + cellLocation);
+        String[] splitedCellLocation;
+        //if (isTelephonyManagerValueValid(cellLocation)) {
+            try {
+                cellLocation = cellLocation.replaceAll("[\\[\\]]", "");
+                splitedCellLocation = cellLocation.split(",");
+                if (!TextUtils.isEmpty(splitedCellLocation)) {
+                    String value = splitedCellLocation[cellLocationType];
+                    if (isNumeric(value)) {
+                        return Integer.parseInt(value);
+                    }
+                    Log.i("cellLoc value: " + value);
+                }
+
+            } catch (Exception e) {
+                Log.i( context.getString(R.string.error_cell_location_value));
+            }
+        //}
+        return DEFAULT_GSM_CELL_ID_VALUE;
+    }
+
+    static boolean isNumeric(String s) {
+        return s.matches("[-+]?\\d*\\.?\\d+");
     }
 
 }

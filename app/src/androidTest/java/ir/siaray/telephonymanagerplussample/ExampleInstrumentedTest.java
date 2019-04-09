@@ -1,4 +1,4 @@
-package ir.siaray.telephonymanagerplus;
+package ir.siaray.telephonymanagerplussample;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("ir.siaray.telephonymanagerplus", appContext.getPackageName());
+        assertEquals("ir.siaray.telephonymanagerplussample", appContext.getPackageName());
     }
 }
