@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
@@ -29,4 +32,15 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+publish {
+    userOrg = USER_NAME as String
+    groupId = GROUP as String
+    artifactId = LIBRARY_ARTIFACT_ID as String
+    uploadName = UPLOAD_NAME as String
+    publishVersion = LIBRARY_VERSION_NAME as String
+    desc = LIBRARY_DESCRIPTION as String
+    website = GITHUB_URL as String
+    issueTracker = ISSUE_TRACKER as String
 }
