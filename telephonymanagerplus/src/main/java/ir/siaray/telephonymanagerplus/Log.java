@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
  */
 
 public class Log {
-    private static String TAG = "telephonymanagerplus";
+    private static String TAG = "telephonymanagerplustag";
 
     public static <T> void i(T msg) {
         if (BuildConfig.DEBUG)

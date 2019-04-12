@@ -7,13 +7,47 @@
     android:background="#444444"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/tv_output"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Device info:"
-        android:layout_margin="30dp"
-        android:textSize="20dp"
-        android:textColor="#ffffff" />
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_above="@+id/btn_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:fillViewport="true">
 
+        <TextView
+            android:id="@+id/tv_output"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:text="Device info:"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+    </ScrollView>
+<LinearLayout
+    android:id="@+id/btn_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:gravity="center_horizontal"
+    android:layout_marginBottom="30dp"
+    android:orientation="horizontal">
+    <Button
+        android:id="@+id/btn_refresh_lib_info"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#673AB7"
+        android:textColor="#ffffff"
+        android:text="Refresh Library" />
+
+    <Button
+        android:id="@+id/btn_refresh_android"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4B9742"
+        android:textColor="#ffffff"
+        android:text="Refresh Android" />
+
+</LinearLayout>
 </RelativeLayout>

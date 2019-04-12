@@ -77,4 +77,5 @@ public class TelephonyManagerPlus {
                 , TELEPHONY_MANAGER_CELL_LOCATION
                 , slot);
     }
+
 }

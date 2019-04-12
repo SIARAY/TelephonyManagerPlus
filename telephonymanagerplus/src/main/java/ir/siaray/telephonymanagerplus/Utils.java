@@ -9,7 +9,10 @@ import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_TELEPHONY_MANAGER
 
 public class Utils {
 
-    static String getTelephonyManagerValues(Context context,TelephonyManager telephony, String methodName, int simSlotId) {
+    static String getTelephonyManagerValues(Context context
+            ,TelephonyManager telephony
+            , String methodName
+            , int simSlotId) {
         if (context == null)
             return DEFAULT_TELEPHONY_MANAGER_VALUE;
         Class<?> telephonyClass;
@@ -22,6 +25,7 @@ public class Utils {
                     String name = method.getName();
                     if (name.contains(methodName)) {
                         Class<?>[] params = method.getParameterTypes();
+                            Log.i("methodName: "+name+" value: "+getOutputByReflection(telephony, name, simSlotId, false));
                         if (params.length == 1 && params[0].getName().equals("int")) {
                             reflectionMethod = name;
                         }
@@ -42,7 +46,10 @@ public class Utils {
         return output;
     }
 
-    private static String getOutputByReflection(TelephonyManager telephony, String predictedMethodName, int slotID, boolean isPrivate) {
+    private static String getOutputByReflection(TelephonyManager telephony
+            , String predictedMethodName
+            , int slotID
+            , boolean isPrivate) {
 
         String result = DEFAULT_TELEPHONY_MANAGER_VALUE;
         try {
