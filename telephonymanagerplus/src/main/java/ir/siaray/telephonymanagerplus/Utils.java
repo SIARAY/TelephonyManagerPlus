@@ -2,6 +2,8 @@ package ir.siaray.telephonymanagerplus;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_GSM_CELL_ID_VALUE;
@@ -10,7 +12,7 @@ import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_TELEPHONY_MANAGER
 public class Utils {
 
     static String getTelephonyManagerValues(Context context
-            ,TelephonyManager telephony
+            , TelephonyManager telephony
             , String methodName
             , int simSlotId) {
         if (context == null)
@@ -23,11 +25,14 @@ public class Utils {
                 telephonyClass = Class.forName(telephony.getClass().getName());
                 for (Method method : telephonyClass.getMethods()) {
                     String name = method.getName();
-                    if (name.contains(methodName)) {
+                    if (name.equalsIgnoreCase(methodName)/*name.contains(methodName)*/) {
+                        //Log.i("methodName: " + methodName );
+                        //Log.i("methodName: " + name + " value: " + getOutputByReflection(telephony, name, simSlotId, false));
                         Class<?>[] params = method.getParameterTypes();
-                            Log.i("methodName: "+name+" value: "+getOutputByReflection(telephony, name, simSlotId, false));
+                        //Log.i("methodName param: " + name + " value: " + params.getClass().getName());
                         if (params.length == 1 && params[0].getName().equals("int")) {
                             reflectionMethod = name;
+                            //Log.i("methodName okkkkkk");
                         }
                     }
                 }
@@ -62,6 +67,7 @@ public class Utils {
                     getSimID = telephonyClass.getDeclaredMethod(predictedMethodName, parameter);
                 } else {
                     getSimID = telephonyClass.getMethod(predictedMethodName, parameter);
+                    printSlot("simid1", slotID, telephony, getSimID);
                 }
             } else {
                 if (isPrivate) {
@@ -70,7 +76,7 @@ public class Utils {
                     getSimID = telephonyClass.getMethod(predictedMethodName);
                 }
             }
-
+            //Log.i("sim slot " +slotID+" : id:"+ getSimID);
             Object ob_phone;
             Object[] obParameter = new Object[1];
             obParameter[0] = slotID;
@@ -96,6 +102,34 @@ public class Utils {
 
     }
 
+    private static void printSlot(String tag, int slotID, TelephonyManager telephony, Method getSimID) {
+        Object ob_phone;
+        Object[] obParameter = new Object[1];
+        obParameter[0] = slotID;
+        try {
+            if (getSimID != null) {
+                if (slotID != -1) {
+                    ob_phone = getSimID.invoke(telephony, obParameter);
+
+                } else {
+                    ob_phone = getSimID.invoke(telephony);
+                }
+
+                if (ob_phone != null) {
+                    Log.i("slottttt " + slotID + " : " + tag + " : " + ob_phone.toString());
+                    //Log.printItems(getSimID);
+                } else {
+                    Log.i("slottttt " + slotID + " : " + tag + " : null");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     interface CellLocationType {
         int LOC = 0;
         int CID = 1;
@@ -106,20 +140,20 @@ public class Utils {
         Log.i("cellLoc: " + cellLocation);
         String[] splitedCellLocation;
         //if (isTelephonyManagerValueValid(cellLocation)) {
-            try {
-                cellLocation = cellLocation.replaceAll("[\\[\\]]", "");
-                splitedCellLocation = cellLocation.split(",");
-                if (!TextUtils.isEmpty(splitedCellLocation)) {
-                    String value = splitedCellLocation[cellLocationType];
-                    if (isNumeric(value)) {
-                        return Integer.parseInt(value);
-                    }
-                    Log.i("cellLoc value: " + value);
+        try {
+            cellLocation = cellLocation.replaceAll("[\\[\\]]", "");
+            splitedCellLocation = cellLocation.split(",");
+            if (!TextUtils.isEmpty(splitedCellLocation)) {
+                String value = splitedCellLocation[cellLocationType];
+                if (isNumeric(value)) {
+                    return Integer.parseInt(value);
                 }
-
-            } catch (Exception e) {
-                Log.i( context.getString(R.string.error_cell_location_value));
+                Log.i("cellLoc value: " + value);
             }
+
+        } catch (Exception e) {
+            Log.i(context.getString(R.string.error_cell_location_value));
+        }
         //}
         return DEFAULT_GSM_CELL_ID_VALUE;
     }

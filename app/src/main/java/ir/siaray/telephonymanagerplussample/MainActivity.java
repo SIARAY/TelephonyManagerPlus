@@ -23,8 +23,8 @@ import ir.siaray.telephonymanagerplus.TelephonyManagerPlus;
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvOutput;
-    private int slot1 = 1;
-    private int slot2 = 2;
+    private int slot1 = 0;
+    private int slot2 = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             tvOutput.setText("Need to permission");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+
             return;
         }
         deviceInfo = ""
@@ -78,9 +80,19 @@ public class MainActivity extends AppCompatActivity {
                 + "\n" + "getSimOperatorName2: " + telephonyManagerPlus.getSimOperatorName(slot2)
                 + "\n" + "getImei1: " + telephonyManagerPlus.getImei(slot1)
                 + "\n" + "getImei2: " + telephonyManagerPlus.getImei(slot2)
+                + "\n" + "getSubscriberId1: " + telephonyManagerPlus.getSubscriberId(slot1)
+                + "\n" + "getSubscriberId2: " + telephonyManagerPlus.getSubscriberId(slot2)
                 + "\n" + "getCellLocation1: " + telephonyManagerPlus.getCellLocation(slot1)
                 + "\n" + "getCellLocation2: " + telephonyManagerPlus.getCellLocation(slot2);
-
+        for (int i = 0; i <5 ; i++) {
+           /*Log.i("print123 serial -------------");
+           Log.i("print123 serial "+i+" ::: "+ telephonyManagerPlus.getSimSerialNumber(i));
+           Log.i("print123 operatorName "+i+" ::: "+ telephonyManagerPlus.getSimOperatorName(i));
+           Log.i("print123 operatorCode "+i+" ::: "+ telephonyManagerPlus.getNetworkOperator(i));
+           Log.i("print123 imei "+i+" ::: "+ telephonyManagerPlus.getImei(i));
+           Log.i("print123 getSubscriberId "+i+" ::: "+ telephonyManagerPlus.getSubscriberId(i));
+           Log.i("print123 getCellLocation "+i+" ::: "+ telephonyManagerPlus.getCellLocation(i));*/
+        }
         deviceInfo = getSimSlotIndex(deviceInfo);
         tvOutput.setText(deviceInfo);
 
@@ -100,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 return "";
             }
             List<SubscriptionInfo> subsInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-
-            Log.i("Current list = " + subsInfoList);
+            //Log.i("Current list = " + subsInfoList);
             deviceInfo=deviceInfo+"\n-----------";
             int slotNumber=1;
             for (SubscriptionInfo subscriptionInfo : subsInfoList) {
@@ -109,10 +120,21 @@ public class MainActivity extends AppCompatActivity {
                 int simIndex = subscriptionInfo.getSimSlotIndex();
                 String number = subscriptionInfo.getNumber();
                 String name = (String)subscriptionInfo.getDisplayName();
+                String carrier = (String)subscriptionInfo.getCarrierName();
+                String countryIso = (String)subscriptionInfo.getCountryIso();
+                String iccId = (String)subscriptionInfo.getIccId();
+                int mnc = subscriptionInfo.getMnc();
+                int mcc = subscriptionInfo.getMcc();
 
-                Log.i("slot: " + simIndex + " ::: number: " + number);
+                //Log.i("slot: " + simIndex + " ::: number: " + number);
                 deviceInfo = deviceInfo + "\nslot "+slotNumber+" index: " + simIndex
                         + " - number: " + number
+                        + " - carrier: " + carrier
+                        + " - countryIso: " + countryIso;
+                deviceInfo = deviceInfo + "\nslot "+slotNumber
+                        + " - iccId: " + iccId
+                        + " - mnc: " + mnc
+                        + " - mcc: " + mcc
                         + " - name: " + name;
             }
         }
@@ -131,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             tvOutput.setText("Need to permission");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
             return;
         }
         deviceInfo = ""
@@ -182,4 +205,6 @@ public class MainActivity extends AppCompatActivity {
         tvOutput.setText(deviceInfo);
 
     }
+
+
 }

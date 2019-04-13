@@ -78,4 +78,11 @@ public class TelephonyManagerPlus {
                 , slot);
     }
 
+    public String getSubscriberId(int slot) {
+        return getTelephonyManagerValues(mContext
+                , mTelephonyManager
+                , "getSubscriberId"
+                , slot);
+    }
+
 }

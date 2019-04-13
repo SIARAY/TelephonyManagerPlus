@@ -12,14 +12,14 @@
         android:layout_above="@+id/btn_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
+        android:padding="30dp"
         android:fillViewport="true">
 
         <TextView
             android:id="@+id/tv_output"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
             android:text="Device info:"
             android:textColor="#ffffff"
             android:textSize="20dp" />
