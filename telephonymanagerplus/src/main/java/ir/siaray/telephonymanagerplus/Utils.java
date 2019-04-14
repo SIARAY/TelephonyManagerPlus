@@ -29,9 +29,9 @@ public class Utils {
                         //Log.i("methodName: " + methodName );
                         //Log.i("methodName: " + name + " value: " + getOutputByReflection(telephony, name, simSlotId, false));
                         Class<?>[] params = method.getParameterTypes();
-                        //Log.i("methodName param: " + name + " value: " + params.getClass().getName());
                         if (params.length == 1 && params[0].getName().equals("int")) {
                             reflectionMethod = name;
+                            //Log.i("methodName param: " + name + " value: " + params.getClass().getName());
                             //Log.i("methodName okkkkkk");
                         }
                     }
@@ -55,7 +55,6 @@ public class Utils {
             , String predictedMethodName
             , int slotID
             , boolean isPrivate) {
-
         String result = DEFAULT_TELEPHONY_MANAGER_VALUE;
         try {
             Class<?> telephonyClass = Class.forName(telephony.getClass().getName());
@@ -67,7 +66,7 @@ public class Utils {
                     getSimID = telephonyClass.getDeclaredMethod(predictedMethodName, parameter);
                 } else {
                     getSimID = telephonyClass.getMethod(predictedMethodName, parameter);
-                    printSlot("simid1", slotID, telephony, getSimID);
+                    //printSlot("simid1", slotID, telephony, getSimID);
                 }
             } else {
                 if (isPrivate) {
@@ -101,7 +100,7 @@ public class Utils {
         return result;
 
     }
-
+/*
     private static void printSlot(String tag, int slotID, TelephonyManager telephony, Method getSimID) {
         Object ob_phone;
         Object[] obParameter = new Object[1];
@@ -127,7 +126,7 @@ public class Utils {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
     interface CellLocationType {

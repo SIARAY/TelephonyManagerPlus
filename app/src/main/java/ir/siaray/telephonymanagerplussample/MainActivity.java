@@ -72,26 +72,28 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         deviceInfo = ""
-                + "\n" + "getSimSerialNumber1: " + telephonyManagerPlus.getSimSerialNumber(slot1)
-                + "\n" + "getSimSerialNumber2: " + telephonyManagerPlus.getSimSerialNumber(slot2)
-                + "\n" + "getNetworkOperator1: " + telephonyManagerPlus.getNetworkOperator(slot1)
-                + "\n" + "getNetworkOperator2: " + telephonyManagerPlus.getNetworkOperator(slot2)
-                + "\n" + "getSimOperatorName1: " + telephonyManagerPlus.getSimOperatorName(slot1)
-                + "\n" + "getSimOperatorName2: " + telephonyManagerPlus.getSimOperatorName(slot2)
-                + "\n" + "getImei1: " + telephonyManagerPlus.getImei(slot1)
-                + "\n" + "getImei2: " + telephonyManagerPlus.getImei(slot2)
-                + "\n" + "getSubscriberId1: " + telephonyManagerPlus.getSubscriberId(slot1)
-                + "\n" + "getSubscriberId2: " + telephonyManagerPlus.getSubscriberId(slot2)
-                + "\n" + "getCellLocation1: " + telephonyManagerPlus.getCellLocation(slot1)
-                + "\n" + "getCellLocation2: " + telephonyManagerPlus.getCellLocation(slot2);
-        for (int i = 0; i <5 ; i++) {
-           /*Log.i("print123 serial -------------");
-           Log.i("print123 serial "+i+" ::: "+ telephonyManagerPlus.getSimSerialNumber(i));
-           Log.i("print123 operatorName "+i+" ::: "+ telephonyManagerPlus.getSimOperatorName(i));
-           Log.i("print123 operatorCode "+i+" ::: "+ telephonyManagerPlus.getNetworkOperator(i));
-           Log.i("print123 imei "+i+" ::: "+ telephonyManagerPlus.getImei(i));
-           Log.i("print123 getSubscriberId "+i+" ::: "+ telephonyManagerPlus.getSubscriberId(i));
-           Log.i("print123 getCellLocation "+i+" ::: "+ telephonyManagerPlus.getCellLocation(i));*/
+                + "\n" + "getSimSerialNumber1: " + telephonyManagerPlus.getSimSerialNumber1()
+                + "\n" + "getSimSerialNumber2: " + telephonyManagerPlus.getSimSerialNumber2()
+                + "\n" + "getNetworkOperator1: " + telephonyManagerPlus.getNetworkOperator1()
+                + "\n" + "getNetworkOperator2: " + telephonyManagerPlus.getNetworkOperator2()
+                + "\n" + "getSimOperatorName1: " + telephonyManagerPlus.getSimOperatorName1()
+                + "\n" + "getSimOperatorName2: " + telephonyManagerPlus.getSimOperatorName2()
+                + "\n" + "getImei1: " + telephonyManagerPlus.getImei1()
+                + "\n" + "getImei2: " + telephonyManagerPlus.getImei2()
+                + "\n" + "getSubscriberId1: " + telephonyManagerPlus.getSubscriberId1()
+                + "\n" + "getSubscriberId2: " + telephonyManagerPlus.getSubscriberId2()
+                + "\n" + "getCellLocation1: " + telephonyManagerPlus.getCellLocation1()
+                + "\n" + "getCellLocation2: " + telephonyManagerPlus.getCellLocation2();
+        for (int i = 0; i < 5; i++) {
+            Log.i("print123 serial -------------");
+            Log.i("print123 serial -------------");
+            Log.i("print123 serial -------------");
+            Log.i("print123 serial " + i + " ::: " + telephonyManagerPlus.getSimSerialNumber(i));
+            //Log.i("print123 operatorName "+i+" ::: "+ telephonyManagerPlus.getSimOperatorName(i));
+            //Log.i("print123 operatorCode "+i+" ::: "+ telephonyManagerPlus.getNetworkOperator(i));
+            Log.i("print123 imei " + i + " ::: " + telephonyManagerPlus.getImei(i));
+            Log.i("print123 getSubscriberId " + i + " ::: " + telephonyManagerPlus.getSubscriberId(i));
+            //Log.i("print123 getCellLocation "+i+" ::: "+ telephonyManagerPlus.getCellLocation(i));
         }
         deviceInfo = getSimSlotIndex(deviceInfo);
         tvOutput.setText(deviceInfo);
@@ -111,31 +113,41 @@ public class MainActivity extends AppCompatActivity {
                 // for ActivityCompat#requestPermissions for more details.
                 return "";
             }
-            List<SubscriptionInfo> subsInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-            //Log.i("Current list = " + subsInfoList);
-            deviceInfo=deviceInfo+"\n-----------";
-            int slotNumber=1;
-            for (SubscriptionInfo subscriptionInfo : subsInfoList) {
+            try {
+                Log.i("getActiveSubscriptionInfoCount : "+subscriptionManager.getActiveSubscriptionInfoCount());
+                List<SubscriptionInfo> subsInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+                if (subsInfoList != null) {
+                    //Log.i("Current list = " + subsInfoList);
+                    deviceInfo = deviceInfo + "\n-----------";
+                    int slotNumber = 1;
+                    for (SubscriptionInfo subscriptionInfo : subsInfoList) {
 
-                int simIndex = subscriptionInfo.getSimSlotIndex();
-                String number = subscriptionInfo.getNumber();
-                String name = (String)subscriptionInfo.getDisplayName();
-                String carrier = (String)subscriptionInfo.getCarrierName();
-                String countryIso = (String)subscriptionInfo.getCountryIso();
-                String iccId = (String)subscriptionInfo.getIccId();
-                int mnc = subscriptionInfo.getMnc();
-                int mcc = subscriptionInfo.getMcc();
+                        int simIndex = subscriptionInfo.getSimSlotIndex();
+                        String number = subscriptionInfo.getNumber();
+                        String name = (String) subscriptionInfo.getDisplayName();
+                        String carrier = (String) subscriptionInfo.getCarrierName();
+                        String countryIso = (String) subscriptionInfo.getCountryIso();
+                        String iccId = (String) subscriptionInfo.getIccId();
+                        int mnc = subscriptionInfo.getMnc();
+                        int mcc = subscriptionInfo.getMcc();
 
-                //Log.i("slot: " + simIndex + " ::: number: " + number);
-                deviceInfo = deviceInfo + "\nslot "+slotNumber+" index: " + simIndex
-                        + " - number: " + number
-                        + " - carrier: " + carrier
-                        + " - countryIso: " + countryIso;
-                deviceInfo = deviceInfo + "\nslot "+slotNumber
-                        + " - iccId: " + iccId
-                        + " - mnc: " + mnc
-                        + " - mcc: " + mcc
-                        + " - name: " + name;
+                        //Log.i("slot: " + simIndex + " ::: number: " + number);
+                        deviceInfo = deviceInfo + "\nslot " + slotNumber + " index: " + simIndex
+                                + " - number: " + number
+                                + " - carrier: " + carrier
+                                + " - countryIso: " + countryIso;
+                        deviceInfo = deviceInfo + "\nslot " + slotNumber
+                                + " - iccId: " + iccId
+                                + " - mnc: " + mnc
+                                + " - mcc: " + mcc
+                                + " - name: " + name;
+
+                    }
+                } else {
+                    deviceInfo = deviceInfo + "\nSubscriptionInfo is null ";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return deviceInfo;
@@ -170,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
                 + "\n" + "getSimOperatorName: " + mTelephonyManager.getSimOperatorName()
                 + "\n" + "getNetworkOperatorName: " + mTelephonyManager.getNetworkOperatorName()
                 + "\n" + "getDeviceId: " + mTelephonyManager.getDeviceId()
-                + "\n" + "getCellLocation: " + mTelephonyManager.getCellLocation()
                 + "\n" + "getLine1Number: " + mTelephonyManager.getLine1Number()
                 + "\n" + "getNetworkType: " + mTelephonyManager.getNetworkType()
                 + "\n" + "getPhoneType: " + mTelephonyManager.getPhoneType();
@@ -178,6 +189,19 @@ public class MainActivity extends AppCompatActivity {
             deviceInfo = deviceInfo
                     + "\n" + "getCellLocation: " + mTelephonyManager.getCellLocation();
         }*/
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            deviceInfo = deviceInfo
+                    + "\n" + "getCellLocation: " + mTelephonyManager.getCellLocation();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
             deviceInfo = deviceInfo
