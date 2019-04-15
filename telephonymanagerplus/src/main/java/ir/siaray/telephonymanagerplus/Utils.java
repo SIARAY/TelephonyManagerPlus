@@ -25,14 +25,12 @@ public class Utils {
                 telephonyClass = Class.forName(telephony.getClass().getName());
                 for (Method method : telephonyClass.getMethods()) {
                     String name = method.getName();
+                    //printTmValues(telephony, simSlotId, name);
                     if (name.equalsIgnoreCase(methodName)/*name.contains(methodName)*/) {
-                        //Log.i("methodName: " + methodName );
-                        //Log.i("methodName: " + name + " value: " + getOutputByReflection(telephony, name, simSlotId, false));
                         Class<?>[] params = method.getParameterTypes();
                         if (params.length == 1 && params[0].getName().equals("int")) {
                             reflectionMethod = name;
-                            //Log.i("methodName param: " + name + " value: " + params.getClass().getName());
-                            //Log.i("methodName okkkkkk");
+
                         }
                     }
                 }
@@ -51,6 +49,12 @@ public class Utils {
         return output;
     }
 
+    private static void printTmValues(TelephonyManager telephony, int simSlotId, String name) {
+        String value = getOutputByReflection(telephony, name, simSlotId, false);
+        if(value!=null)
+        Log.i("methodName: " + name + " value: " + value);
+    }
+
     private static String getOutputByReflection(TelephonyManager telephony
             , String predictedMethodName
             , int slotID
@@ -66,7 +70,6 @@ public class Utils {
                     getSimID = telephonyClass.getDeclaredMethod(predictedMethodName, parameter);
                 } else {
                     getSimID = telephonyClass.getMethod(predictedMethodName, parameter);
-                    //printSlot("simid1", slotID, telephony, getSimID);
                 }
             } else {
                 if (isPrivate) {
@@ -75,7 +78,6 @@ public class Utils {
                     getSimID = telephonyClass.getMethod(predictedMethodName);
                 }
             }
-            //Log.i("sim slot " +slotID+" : id:"+ getSimID);
             Object ob_phone;
             Object[] obParameter = new Object[1];
             obParameter[0] = slotID;

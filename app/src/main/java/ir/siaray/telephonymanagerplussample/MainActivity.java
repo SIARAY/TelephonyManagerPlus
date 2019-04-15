@@ -7,6 +7,15 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.CellIdentityCdma;
+import android.telephony.CellIdentityGsm;
+import android.telephony.CellIdentityLte;
+import android.telephony.CellIdentityWcdma;
+import android.telephony.CellInfo;
+import android.telephony.CellInfoCdma;
+import android.telephony.CellInfoGsm;
+import android.telephony.CellInfoLte;
+import android.telephony.CellInfoWcdma;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -31,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUi();
-        //test
     }
 
     private void initUi() {
@@ -52,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         printDeviceInfo();
-        //printDeviceInfoByLibrary();
     }
 
     private void printDeviceInfoByLibrary() {
@@ -76,8 +83,12 @@ public class MainActivity extends AppCompatActivity {
                 + "\n" + "getSimSerialNumber2: " + telephonyManagerPlus.getSimSerialNumber2()
                 + "\n" + "getNetworkOperator1: " + telephonyManagerPlus.getNetworkOperator1()
                 + "\n" + "getNetworkOperator2: " + telephonyManagerPlus.getNetworkOperator2()
+                + "\n" + "getNetworkOperatorName1: " + telephonyManagerPlus.getNetworkOperatorName1()
+                + "\n" + "getNetworkOperatorName2: " + telephonyManagerPlus.getNetworkOperatorName2()
                 + "\n" + "getSimOperatorName1: " + telephonyManagerPlus.getSimOperatorName1()
                 + "\n" + "getSimOperatorName2: " + telephonyManagerPlus.getSimOperatorName2()
+                + "\n" + "getSimOperator1: " + telephonyManagerPlus.getSimOperator1()
+                + "\n" + "getSimOperator2: " + telephonyManagerPlus.getSimOperator2()
                 + "\n" + "getImei1: " + telephonyManagerPlus.getImei1()
                 + "\n" + "getImei2: " + telephonyManagerPlus.getImei2()
                 + "\n" + "getSubscriberId1: " + telephonyManagerPlus.getSubscriberId1()
@@ -89,10 +100,12 @@ public class MainActivity extends AppCompatActivity {
             Log.i("print123 serial -------------");
             Log.i("print123 serial -------------");
             Log.i("print123 serial " + i + " ::: " + telephonyManagerPlus.getSimSerialNumber(i));
-            //Log.i("print123 operatorName "+i+" ::: "+ telephonyManagerPlus.getSimOperatorName(i));
-            //Log.i("print123 operatorCode "+i+" ::: "+ telephonyManagerPlus.getNetworkOperator(i));
+            Log.i("print123 simOperator "+i+" ::: "+ telephonyManagerPlus.getSimOperator(i));
+            Log.i("print123 operatorName "+i+" ::: "+ telephonyManagerPlus.getSimOperatorName(i));
+            Log.i("print123 operatorCode "+i+" ::: "+ telephonyManagerPlus.getNetworkOperator(i));
             Log.i("print123 imei " + i + " ::: " + telephonyManagerPlus.getImei(i));
             Log.i("print123 getSubscriberId " + i + " ::: " + telephonyManagerPlus.getSubscriberId(i));
+            Log.i("print123 getCellLocation " + i + " ::: " + telephonyManagerPlus.getCellLocation(i));
             //Log.i("print123 getCellLocation "+i+" ::: "+ telephonyManagerPlus.getCellLocation(i));
         }
         deviceInfo = getSimSlotIndex(deviceInfo);
@@ -181,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 + "\n" + "getSubscriberId: " + mTelephonyManager.getSubscriberId()
                 + "\n" + "getSimOperatorName: " + mTelephonyManager.getSimOperatorName()
                 + "\n" + "getNetworkOperatorName: " + mTelephonyManager.getNetworkOperatorName()
-                + "\n" + "getDeviceId: " + mTelephonyManager.getDeviceId()
+                + "\n" + "getDeviceId1: " + mTelephonyManager.getDeviceId()
                 + "\n" + "getLine1Number: " + mTelephonyManager.getLine1Number()
                 + "\n" + "getNetworkType: " + mTelephonyManager.getNetworkType()
                 + "\n" + "getPhoneType: " + mTelephonyManager.getPhoneType();
@@ -211,7 +224,8 @@ public class MainActivity extends AppCompatActivity {
             deviceInfo = deviceInfo
                     + "\n" + "getMeid: " + mTelephonyManager.getMeid()
                     + "\n" + "getForbiddenPlmns: " + Arrays.toString(mTelephonyManager.getForbiddenPlmns())
-                    + "\n" + "getImei: " + mTelephonyManager.getImei();
+                    + "\n" + "getImei1: " + mTelephonyManager.getImei()
+                    + "\n" + "getImei2: " + mTelephonyManager.getImei(1);
         }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             deviceInfo = deviceInfo
@@ -219,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             deviceInfo = deviceInfo
+                    + "\n" + "getDeviceId2: " + mTelephonyManager.getDeviceId(1)
                     + "\n" + "getPhoneCount: " + mTelephonyManager.getPhoneCount();
         }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -227,8 +242,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         tvOutput.setText(deviceInfo);
-
     }
-
-
 }
