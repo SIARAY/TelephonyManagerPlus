@@ -92,10 +92,20 @@ public class MainActivity extends AppCompatActivity {
                 + "\n" + "getImei1: " + telephonyManagerPlus.getImei1()
                 + "\n" + "getImei2: " + telephonyManagerPlus.getImei2()
                 + "\n" + "getSubscriberId1: " + telephonyManagerPlus.getSubscriberId1()
-                + "\n" + "getSubscriberId2: " + telephonyManagerPlus.getSubscriberId2()
-                + "\n" + "getCellLocation1: " + telephonyManagerPlus.getCellLocation1()
-                + "\n" + "getCellLocation2: " + telephonyManagerPlus.getCellLocation2();
-        for (int i = 0; i < 5; i++) {
+                + "\n" + "getSubscriberId2: " + telephonyManagerPlus.getSubscriberId2();
+        deviceInfo = deviceInfo + "\n----------------"
+                + "\n" + "getMnc1: " + telephonyManagerPlus.getMnc1()
+                + "\n" + "getMnc2: " + telephonyManagerPlus.getMnc2()
+                + "\n" + "getMcc1: " + telephonyManagerPlus.getMcc1()
+                + "\n" + "getMcc2: " + telephonyManagerPlus.getMcc1()
+                + "\n" + "getLoc1: " + telephonyManagerPlus.getGSMLocationAreaCodeSlot1()
+                + "\n" + "getLoc2: " + telephonyManagerPlus.getGSMLocationAreaCodeSlot2()
+                + "\n" + "getCellId1: " + telephonyManagerPlus.getCellId1()
+                + "\n" + "getCellId2: " + telephonyManagerPlus.getCellId2();
+
+        //+ "\n" + "getCellLocation1: " + telephonyManagerPlus.getCellLocation1()
+        //+ "\n" + "getCellLocation2: " + telephonyManagerPlus.getCellLocation2();
+        /*for (int i = 0; i < 5; i++) {
             Log.i("print123 serial -------------");
             Log.i("print123 serial -------------");
             Log.i("print123 serial -------------");
@@ -107,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("print123 getSubscriberId " + i + " ::: " + telephonyManagerPlus.getSubscriberId(i));
             Log.i("print123 getCellLocation " + i + " ::: " + telephonyManagerPlus.getCellLocation(i));
             //Log.i("print123 getCellLocation "+i+" ::: "+ telephonyManagerPlus.getCellLocation(i));
-        }
+        }*/
         deviceInfo = getSimSlotIndex(deviceInfo);
         tvOutput.setText(deviceInfo);
 
@@ -127,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 return "";
             }
             try {
-                Log.i("getActiveSubscriptionInfoCount : "+subscriptionManager.getActiveSubscriptionInfoCount());
+                Log.i("getActiveSubscriptionInfoCount : " + subscriptionManager.getActiveSubscriptionInfoCount());
                 List<SubscriptionInfo> subsInfoList = subscriptionManager.getActiveSubscriptionInfoList();
                 if (subsInfoList != null) {
                     //Log.i("Current list = " + subsInfoList);
@@ -154,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                                 + " - mnc: " + mnc
                                 + " - mcc: " + mcc
                                 + " - name: " + name;
-
+                        slotNumber++;
                     }
                 } else {
                     deviceInfo = deviceInfo + "\nSubscriptionInfo is null ";

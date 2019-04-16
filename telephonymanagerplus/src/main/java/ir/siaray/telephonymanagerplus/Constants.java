@@ -1,7 +1,8 @@
 package ir.siaray.telephonymanagerplus;
 
 public class Constants {
-    static final String DEFAULT_TELEPHONY_MANAGER_VALUE = null;
+    static final String DEFAULT_TELEPHONY_MANAGER_STRING_VALUE = null;
+    static final int DEFAULT_TELEPHONY_MANAGER_INT_VALUE = -1;
     static final String TELEPHONY_MANAGER_NETWORK_OPERATOR = "getNetworkOperator";
     static final String TELEPHONY_MANAGER_NETWORK_OPERATOR_NAME = "getNetworkOperatorName";
     static final String TELEPHONY_MANAGER_CELL_LOCATION = "getCellLocation";
