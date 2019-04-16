@@ -136,19 +136,19 @@ public class Utils {
         return true;
     }
 
-    static int getMncFromNetworkOperator(String networkOperator){
-        if(isNumeric(networkOperator)){
-            if(networkOperator.length()>3){
-                return Integer.parseInt(networkOperator.substring(0,2));
+    static int getMncFromNetworkOperator(String simOperatorCode){
+        if(isNumeric(simOperatorCode)){
+            if(simOperatorCode.length()>3){
+                return Integer.parseInt(simOperatorCode.substring(0,3));
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
     }
 
-    static int getMccFromNetworkOperator(String networkOperator){
-        if(isNumeric(networkOperator)){
-            if(networkOperator.length()>=5){
-                return Integer.parseInt(networkOperator.substring(3,5));
+    static int getMccFromNetworkOperator(String simOperatorCode){
+        if(isNumeric(simOperatorCode)){
+            if(simOperatorCode.length()>=5){
+                return Integer.parseInt(simOperatorCode.substring(3,5));
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;

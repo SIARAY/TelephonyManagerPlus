@@ -245,7 +245,8 @@ public class TelephonyManagerPlus {
     public int getCellId1() {
         CellLocation cellLocation1 = getCellLocation1();
         if(cellLocation1!=null){
-            return ((GsmCellLocation)cellLocation1).getCid();
+            //if (mTelephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM)
+                return ((GsmCellLocation)cellLocation1).getCid();
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
 
@@ -281,7 +282,7 @@ public class TelephonyManagerPlus {
                 && mSubscriptionInfoList.size() > 1) {
             return mSubscriptionInfoList.get(1).getMnc();
         }
-        return Utils.getMncFromNetworkOperator(getCorrectSim2TelephonyInfo(getSimSerialNumber1(), TELEPHONY_MANAGER_SIM_OPERATOR));
+        return Utils.getMncFromNetworkOperator(getSimOperator2());
     }
 
 
@@ -298,7 +299,7 @@ public class TelephonyManagerPlus {
                 && mSubscriptionInfoList.size() > 1) {
             return mSubscriptionInfoList.get(1).getMcc();
         }
-        return Utils.getMccFromNetworkOperator(getCorrectSim2TelephonyInfo(getSimSerialNumber1(), TELEPHONY_MANAGER_NETWORK_OPERATOR));
+        return Utils.getMccFromNetworkOperator(getSimOperator2());
     }
 
     public String getSubscriberId1() {

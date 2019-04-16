@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 + "\n" + "getMnc1: " + telephonyManagerPlus.getMnc1()
                 + "\n" + "getMnc2: " + telephonyManagerPlus.getMnc2()
                 + "\n" + "getMcc1: " + telephonyManagerPlus.getMcc1()
-                + "\n" + "getMcc2: " + telephonyManagerPlus.getMcc1()
+                + "\n" + "getMcc2: " + telephonyManagerPlus.getMcc2()
                 + "\n" + "getLoc1: " + telephonyManagerPlus.getGSMLocationAreaCodeSlot1()
                 + "\n" + "getLoc2: " + telephonyManagerPlus.getGSMLocationAreaCodeSlot2()
                 + "\n" + "getCellId1: " + telephonyManagerPlus.getCellId1()
