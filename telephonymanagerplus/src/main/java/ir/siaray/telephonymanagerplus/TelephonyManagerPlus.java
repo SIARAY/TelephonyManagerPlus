@@ -30,39 +30,14 @@ import static ir.siaray.telephonymanagerplus.Utils.getTelephonyManagerValues;
 public class TelephonyManagerPlus {
     private TelephonyManager mTelephonyManager;
     private Context mContext;
-    //private String simSerialNumber1;
-    //private String simSerialNumber2;
     private int simSlot2 = 1;
     List<SubscriptionInfo> mSubscriptionInfoList;
 
-    public TelephonyManagerPlus(Context context) {
+    private TelephonyManagerPlus(Context context) {
         mContext = context;
         mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         mSubscriptionInfoList = getSubscriptionManager();
         findSimSlot2();
-/*        mTelephonyManager.getSimCarrierId();
-        mTelephonyManager.getImei();
-        mTelephonyManager.getSimSerialNumber();
-        mTelephonyManager.getDeviceSoftwareVersion();
-        mTelephonyManager.getCallState();
-        mTelephonyManager.getDataActivity();
-        mTelephonyManager.getDataNetworkType();
-        mTelephonyManager.getDataState();
-        mTelephonyManager.getGroupIdLevel1();
-        mTelephonyManager.getLine1Number();
-        mTelephonyManager.getMeid();
-        mTelephonyManager.getMmsUAProfUrl();
-        mTelephonyManager.getMmsUserAgent();
-        mTelephonyManager.getNai();
-        mTelephonyManager.getNetworkCountryIso();
-        mTelephonyManager.getNetworkOperator();
-        mTelephonyManager.getPhoneCount();
-        mTelephonyManager.getPhoneType();
-        mTelephonyManager.getSubscriberId();
-        mTelephonyManager.getSimOperatorName();
-        mTelephonyManager.getDeviceId();*/
-
-
     }
 
     private void findSimSlot2() {
@@ -144,7 +119,7 @@ public class TelephonyManagerPlus {
         return getCorrectSim2TelephonyInfo(getSimSerialNumber1(), TELEPHONY_MANAGER_SIM_SERIAL_NUMBER);
     }
 
-    public String getNetworkOperator1() {
+    /*public String getNetworkOperator1() {
         return mTelephonyManager.getNetworkOperator();
 
     }
@@ -164,7 +139,7 @@ public class TelephonyManagerPlus {
             return String.valueOf(mSubscriptionInfoList.get(1).getDisplayName());
         }
         return getCorrectSim2TelephonyInfo(getNetworkOperator1(), TELEPHONY_MANAGER_NETWORK_OPERATOR_NAME);
-    }
+    }*/
 
     public String getSimOperator1() {
         return mTelephonyManager.getSimOperator();
@@ -172,7 +147,7 @@ public class TelephonyManagerPlus {
     }
 
     public String getSimOperator2() {
-        return getCorrectSim2TelephonyInfo(getNetworkOperator1(), TELEPHONY_MANAGER_SIM_OPERATOR);
+        return getCorrectSim2TelephonyInfo(getSimOperator1(), TELEPHONY_MANAGER_SIM_OPERATOR);
     }
 
     public String getSimOperatorName1() {
@@ -257,7 +232,7 @@ public class TelephonyManagerPlus {
         return getCellLocationValue(mContext, getCellLocation2(), Utils.CellLocationType.CID);
     }
 
-    public int getGSMLocationAreaCodeSlot1() {
+    public int getLac1() {
         CellLocation cellLocation1 = getCellLocation1();
         if(cellLocation1!=null){
             return ((GsmCellLocation)cellLocation1).getLac();
@@ -265,7 +240,7 @@ public class TelephonyManagerPlus {
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
     }
 
-    public int getGSMLocationAreaCodeSlot2() {
+    public int getLac2() {
         return getCellLocationValue(mContext,getCellLocation2(), Utils.CellLocationType.LAC);
     }
 
@@ -274,7 +249,7 @@ public class TelephonyManagerPlus {
                 && mSubscriptionInfoList.size() > 0) {
             return mSubscriptionInfoList.get(0).getMnc();
         }
-        return Utils.getMncFromNetworkOperator(getNetworkOperator1());
+        return Utils.getMncFromNetworkOperator(getSimOperator1());
     }
 
     public int getMnc2() {

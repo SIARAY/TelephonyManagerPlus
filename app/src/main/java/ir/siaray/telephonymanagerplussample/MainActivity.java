@@ -4,36 +4,27 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.CellIdentityCdma;
-import android.telephony.CellIdentityGsm;
-import android.telephony.CellIdentityLte;
-import android.telephony.CellIdentityWcdma;
-import android.telephony.CellInfo;
-import android.telephony.CellInfoCdma;
-import android.telephony.CellInfoGsm;
-import android.telephony.CellInfoLte;
-import android.telephony.CellInfoWcdma;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Arrays;
-import java.util.List;
 
 import ir.siaray.telephonymanagerplus.Log;
 import ir.siaray.telephonymanagerplus.TelephonyManagerPlus;
 
+import static android.view.View.inflate;
+
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tvOutput;
-    private int slot1 = 0;
-    private int slot2 = 1;
+    private ViewGroup itemsContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUi() {
-        tvOutput = findViewById(R.id.tv_output);
+        itemsContainer = findViewById(R.id.items_container);
         Button btnRefreshAndroid = findViewById(R.id.btn_refresh_android);
         Button btnRefreshLibrary = findViewById(R.id.btn_refresh_lib_info);
         btnRefreshLibrary.setOnClickListener(new View.OnClickListener() {
@@ -59,32 +50,55 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        printDeviceInfo();
+        //printDeviceInfo();
+    }
+
+    private void clearContainer() {
+        if (itemsContainer != null
+                && itemsContainer.getChildCount() > 0) {
+            itemsContainer.removeAllViews();
+        }
+    }
+
+    private void addItem(String label, String value) {
+        View view = getLayoutInflater().inflate(R.layout.info_item, null);
+        itemsContainer.addView(view);
+        Log.i(itemsContainer.getChildCount()+" : "+label+" added: "+value);
+        TextView tvLabel = view.findViewById(R.id.tv_label);
+        TextView tvValue = view.findViewById(R.id.tv_output);
+        tvLabel.setText(label);
+        tvValue.setText(value);
     }
 
     private void printDeviceInfoByLibrary() {
+        clearContainer();
         TelephonyManagerPlus telephonyManagerPlus = TelephonyManagerPlus.getInstance(this);
         String deviceInfo = "";
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            tvOutput.setText("Need to permission");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+        if (!isPermissionGranted()) return;
 
-            return;
-        }
-        deviceInfo = ""
+        //View item = inflate(this, R.layout.info_item, null);
+        addItem( "SimSerialNumber1:", telephonyManagerPlus.getSimSerialNumber1());
+        addItem( "SimSerialNumber2:", telephonyManagerPlus.getSimSerialNumber2());
+        addItem( "SimOperatorName1:", telephonyManagerPlus.getSimOperatorName1());
+        addItem( "SimOperatorName2:", telephonyManagerPlus.getSimOperatorName2());
+        addItem( "SimOperator1:", telephonyManagerPlus.getSimOperator1());
+        addItem( "SimOperator2:", telephonyManagerPlus.getSimOperator2());
+        addItem( "Imei1:", telephonyManagerPlus.getImei1());
+        addItem( "Imei2:", telephonyManagerPlus.getImei2());
+        addItem( "SubscriberId1:", telephonyManagerPlus.getSubscriberId1());
+        addItem( "SubscriberId2:", telephonyManagerPlus.getSubscriberId2());
+        addItem( "Mnc1:", ""+telephonyManagerPlus.getMnc1());
+        addItem("getMnc2:", ""+telephonyManagerPlus.getMnc2());
+        addItem("Mcc1:", ""+telephonyManagerPlus.getMcc1());
+        addItem("Mcc1:", ""+telephonyManagerPlus.getMcc2());
+        addItem("Lac1:", ""+telephonyManagerPlus.getLac1());
+        addItem("Lac1:", ""+telephonyManagerPlus.getLac2());
+        addItem("CellId1:", ""+telephonyManagerPlus.getCellId1());
+        addItem("CellId2:", ""+telephonyManagerPlus.getCellId2());
+
+        /*deviceInfo = ""
                 + "\n" + "getSimSerialNumber1: " + telephonyManagerPlus.getSimSerialNumber1()
                 + "\n" + "getSimSerialNumber2: " + telephonyManagerPlus.getSimSerialNumber2()
-                + "\n" + "getNetworkOperator1: " + telephonyManagerPlus.getNetworkOperator1()
-                + "\n" + "getNetworkOperator2: " + telephonyManagerPlus.getNetworkOperator2()
-                + "\n" + "getNetworkOperatorName1: " + telephonyManagerPlus.getNetworkOperatorName1()
-                + "\n" + "getNetworkOperatorName2: " + telephonyManagerPlus.getNetworkOperatorName2()
                 + "\n" + "getSimOperatorName1: " + telephonyManagerPlus.getSimOperatorName1()
                 + "\n" + "getSimOperatorName2: " + telephonyManagerPlus.getSimOperatorName2()
                 + "\n" + "getSimOperator1: " + telephonyManagerPlus.getSimOperator1()
@@ -98,87 +112,15 @@ public class MainActivity extends AppCompatActivity {
                 + "\n" + "getMnc2: " + telephonyManagerPlus.getMnc2()
                 + "\n" + "getMcc1: " + telephonyManagerPlus.getMcc1()
                 + "\n" + "getMcc2: " + telephonyManagerPlus.getMcc2()
-                + "\n" + "getLoc1: " + telephonyManagerPlus.getGSMLocationAreaCodeSlot1()
-                + "\n" + "getLoc2: " + telephonyManagerPlus.getGSMLocationAreaCodeSlot2()
+                + "\n" + "getLac1: " + telephonyManagerPlus.getLac1()
+                + "\n" + "getLac2: " + telephonyManagerPlus.getLac2()
                 + "\n" + "getCellId1: " + telephonyManagerPlus.getCellId1()
                 + "\n" + "getCellId2: " + telephonyManagerPlus.getCellId2();
 
-        //+ "\n" + "getCellLocation1: " + telephonyManagerPlus.getCellLocation1()
-        //+ "\n" + "getCellLocation2: " + telephonyManagerPlus.getCellLocation2();
-        /*for (int i = 0; i < 5; i++) {
-            Log.i("print123 serial -------------");
-            Log.i("print123 serial -------------");
-            Log.i("print123 serial -------------");
-            Log.i("print123 serial " + i + " ::: " + telephonyManagerPlus.getSimSerialNumber(i));
-            Log.i("print123 simOperator "+i+" ::: "+ telephonyManagerPlus.getSimOperator(i));
-            Log.i("print123 operatorName "+i+" ::: "+ telephonyManagerPlus.getSimOperatorName(i));
-            Log.i("print123 operatorCode "+i+" ::: "+ telephonyManagerPlus.getNetworkOperator(i));
-            Log.i("print123 imei " + i + " ::: " + telephonyManagerPlus.getImei(i));
-            Log.i("print123 getSubscriberId " + i + " ::: " + telephonyManagerPlus.getSubscriberId(i));
-            Log.i("print123 getCellLocation " + i + " ::: " + telephonyManagerPlus.getCellLocation(i));
-            //Log.i("print123 getCellLocation "+i+" ::: "+ telephonyManagerPlus.getCellLocation(i));
-        }*/
-        deviceInfo = getSimSlotIndex(deviceInfo);
-        tvOutput.setText(deviceInfo);
-
+        tvOutput.setText(deviceInfo);*/
     }
 
-    private String getSimSlotIndex(String deviceInfo) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-            SubscriptionManager subscriptionManager = SubscriptionManager.from(getApplicationContext());
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return "";
-            }
-            try {
-                Log.i("getActiveSubscriptionInfoCount : " + subscriptionManager.getActiveSubscriptionInfoCount());
-                List<SubscriptionInfo> subsInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-                if (subsInfoList != null) {
-                    //Log.i("Current list = " + subsInfoList);
-                    deviceInfo = deviceInfo + "\n-----------";
-                    int slotNumber = 1;
-                    for (SubscriptionInfo subscriptionInfo : subsInfoList) {
-
-                        int simIndex = subscriptionInfo.getSimSlotIndex();
-                        String number = subscriptionInfo.getNumber();
-                        String name = (String) subscriptionInfo.getDisplayName();
-                        String carrier = (String) subscriptionInfo.getCarrierName();
-                        String countryIso = (String) subscriptionInfo.getCountryIso();
-                        String iccId = (String) subscriptionInfo.getIccId();
-                        int mnc = subscriptionInfo.getMnc();
-                        int mcc = subscriptionInfo.getMcc();
-
-                        //Log.i("slot: " + simIndex + " ::: number: " + number);
-                        deviceInfo = deviceInfo + "\nslot " + slotNumber + " index: " + simIndex
-                                + " - number: " + number
-                                + " - carrier: " + carrier
-                                + " - countryIso: " + countryIso;
-                        deviceInfo = deviceInfo + "\nslot " + slotNumber
-                                + " - iccId: " + iccId
-                                + " - mnc: " + mnc
-                                + " - mcc: " + mcc
-                                + " - name: " + name;
-                        slotNumber++;
-                    }
-                } else {
-                    deviceInfo = deviceInfo + "\nSubscriptionInfo is null ";
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return deviceInfo;
-    }
-
-    private void printDeviceInfo() {
-        TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String deviceInfo = "";
+    private boolean isPermissionGranted() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -187,10 +129,23 @@ public class MainActivity extends AppCompatActivity {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            tvOutput.setText("Need to permission");
+            //tvOutput.setText("Need to permission");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-            return;
+
+            return false;
         }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void printDeviceInfo() {
+        TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String deviceInfo = "";
+        if (!isPermissionGranted()) return;
         deviceInfo = ""
                 + "\n" + "getCallState: " + mTelephonyManager.getCallState()
                 + "\n" + "getDataActivity: " + mTelephonyManager.getDataActivity()
@@ -251,6 +206,6 @@ public class MainActivity extends AppCompatActivity {
                     + "\n" + "getGroupIdLevel1: " + mTelephonyManager.getGroupIdLevel1();
         }
 
-        tvOutput.setText(deviceInfo);
+        //tvOutput.setText(deviceInfo);
     }
 }
