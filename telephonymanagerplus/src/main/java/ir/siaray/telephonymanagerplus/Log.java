@@ -9,16 +9,16 @@ import java.lang.reflect.Field;
 public class Log {
     private static String TAG = "telephonymanagerplustag";
 
-    public static <T> void i(T msg) {
+    static <T> void i(T msg) {
         if (BuildConfig.DEBUG)
             android.util.Log.i(TAG, "" + msg);
     }
 
-    public static <T> void print(T msg) {
+    static <T> void print(T msg) {
         android.util.Log.e(TAG, "" + msg);
     }
 
-    public static String printItems(Object obj) {
+    static String printItems(Object obj) {
         Log.i("*** " + obj.getClass().getSimpleName() + " Values ***");
         String result = "";
         for (Field field : obj.getClass().getDeclaredFields()) {

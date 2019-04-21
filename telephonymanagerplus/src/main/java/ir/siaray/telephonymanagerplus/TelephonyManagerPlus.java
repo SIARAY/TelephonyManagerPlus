@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.telephony.CellLocation;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.telephony.SubscriptionPlan;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 
@@ -95,9 +96,6 @@ public class TelephonyManagerPlus {
                 , mTelephonyManager
                 , methodName
                 , simSlot2);
-        if (methodName.equals(TELEPHONY_MANAGER_CELL_LOCATION)) {
-            Log.i("getCellLocation2 2: " + telephonyManagerValue);
-        }
         if (!TextUtils.isEmpty(telephonyManagerValue)
                 && telephonyManagerValue.equals(sim1Value))
             return getTelephonyInfo(sim1Value, TELEPHONY_MANAGER_IMEI);
@@ -152,7 +150,6 @@ public class TelephonyManagerPlus {
 
     public String getSimOperatorName1() {
         return mTelephonyManager.getSimOperatorName();
-
     }
 
     public String getSimOperatorName2() {
@@ -217,7 +214,7 @@ public class TelephonyManagerPlus {
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
-    public int getCellId1() {
+    public int getCid1() {
         CellLocation cellLocation1 = getCellLocation1();
         if(cellLocation1!=null){
             //if (mTelephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM)
@@ -228,7 +225,7 @@ public class TelephonyManagerPlus {
     }
 
 
-    public int getCellId2() {
+    public int getCid2() {
         return getCellLocationValue(mContext, getCellLocation2(), Utils.CellLocationType.CID);
     }
 
@@ -343,7 +340,8 @@ public class TelephonyManagerPlus {
 
     private List<SubscriptionInfo> getSubscriptionManager() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-            SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
+            //SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
+            SubscriptionManager subscriptionManager= (SubscriptionManager) mContext.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             try {
                 if (!isPhoneStatePermissionGranted()) {
                     return null;
@@ -353,7 +351,6 @@ public class TelephonyManagerPlus {
                 e.printStackTrace();
             }
         }
-        Log.i("SubscriptionManager is null");
         return null;
     }
 

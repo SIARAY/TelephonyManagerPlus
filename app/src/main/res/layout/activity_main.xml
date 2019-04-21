@@ -13,15 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="0dp"
-        android:padding="30dp"
+        android:padding="20dp"
         android:fillViewport="true">
         <LinearLayout
             android:id="@+id/items_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#5488"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
         </LinearLayout>
@@ -30,27 +29,31 @@
 <LinearLayout
     android:id="@+id/btn_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
     android:gravity="center_horizontal"
-    android:layout_marginBottom="30dp"
     android:orientation="horizontal">
+
     <Button
         android:id="@+id/btn_refresh_lib_info"
-        android:layout_width="140dp"
-        android:layout_height="80dp"
-        android:backgroundTint="#673AB7"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         android:textColor="#ffffff"
-        android:text="Refresh TelephonyManager Plus" />
+        android:layout_weight="1"
+        android:padding="15dp"
+        android:text="TelephonyManager Plus" />
 
     <Button
         android:id="@+id/btn_refresh_android"
-        android:layout_width="140dp"
-        android:layout_height="80dp"
-        android:backgroundTint="#4B9742"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:padding="15dp"
         android:textColor="#ffffff"
-        android:text="Refresh TelephonyManager" />
+        android:layout_weight="1"
+        android:text="TelephonyManager" />
 
 </LinearLayout>
 </RelativeLayout>

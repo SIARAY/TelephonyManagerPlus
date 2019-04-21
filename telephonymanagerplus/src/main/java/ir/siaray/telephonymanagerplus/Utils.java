@@ -103,7 +103,6 @@ public class Utils {
     }
 
     static int getCellLocationValue(Context context, String cellLocation, int cellLocationType) {
-        Log.i("cellLoc: " + cellLocation);
         String[] splitedCellLocation;
         if (isTelephonyManagerValueValid(cellLocation)) {
             try {
@@ -114,11 +113,10 @@ public class Utils {
                     if (isNumeric(value)) {
                         return Integer.parseInt(value);
                     }
-                    Log.i("cellLoc value: " + value);
                 }
 
             } catch (Exception e) {
-                Log.i(context.getString(R.string.error_cell_location_value));
+                Log.print(context.getString(R.string.error_cell_location_value));
             }
         }
         return DEFAULT_GSM_CELL_ID_VALUE;

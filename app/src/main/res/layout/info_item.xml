@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:weightSum="1"
+    android:orientation="horizontal"
+    android:paddingRight="0dp"
+    android:paddingLeft="0dp"
+    android:paddingBottom="10dp">
+
     <TextView
         android:id="@+id/tv_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
         android:layout_weight="0.5"
-        android:layout_marginRight="5dp"
+        android:padding="3dp"
         android:gravity="left|center_vertical"
         android:text="Device info:"
         android:textColor="#ffffff"
@@ -19,12 +23,13 @@
 
     <TextView
         android:id="@+id/tv_output"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
         android:layout_weight="0.5"
+        android:padding="3dp"
         android:gravity="left|center_vertical"
         android:text="Device info:"
-        android:layout_marginLeft="5dp"
         android:textColor="#ffffff"
         android:textSize="20dp" />
 
