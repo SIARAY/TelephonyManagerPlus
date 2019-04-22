@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewGroup itemsContainer;
     private Button btnRefreshAndroid;
     private Button btnRefreshLibrary;
-    private boolean libraryButtonCliked = true;
+    private boolean libraryButtonClicked = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,13 +113,13 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    @Override
+   /* @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (libraryButtonCliked)
+                    if (libraryButtonClicked)
                         printDeviceInfoByLibrary();
                     else printDeviceInfo();
 
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             case 2: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    if (libraryButtonCliked)
+                    if (libraryButtonClicked)
                         printDeviceInfoByLibrary();
                     else printDeviceInfo();
 
@@ -141,61 +142,63 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-    }
+    }*/
 
     private void printDeviceInfo() {
         btnRefreshAndroid.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.selectedButton));
         btnRefreshLibrary.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         clearContainer();
         TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (!isReadPhoneStatePermissionGranted()) return;
+        if (mTelephonyManager == null) return;
         addItem("CallState: ", mTelephonyManager.getCallState());
         addItem("DataActivity: ", mTelephonyManager.getDataActivity());
         addItem("DataState: ", mTelephonyManager.getDataState());
-        addItem("Line1Number: ", mTelephonyManager.getLine1Number());
-        addItem("SimSerialNumber: ", mTelephonyManager.getSimSerialNumber());
-        addItem("DeviceSoftwareVersion: ", mTelephonyManager.getDeviceSoftwareVersion());
         addItem("NetworkCountryIso: ", mTelephonyManager.getNetworkCountryIso());
         addItem("SimOperator: ", mTelephonyManager.getSimOperator());
         addItem("NetworkOperator: ", mTelephonyManager.getNetworkOperator());
-        addItem("SubscriberId: ", mTelephonyManager.getSubscriberId());
         addItem("SimOperatorName: ", mTelephonyManager.getSimOperatorName());
         addItem("NetworkOperatorName: ", mTelephonyManager.getNetworkOperatorName());
-        addItem("DeviceId1: ", mTelephonyManager.getDeviceId());
-        addItem("Line1Number: ", mTelephonyManager.getLine1Number());
         addItem("NetworkType: ", mTelephonyManager.getNetworkType());
-        addItem("PhoneType: ", mTelephonyManager.getPhoneType());
 
-        if (isLocationPermissionGranted()) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            addItem("CellLocation: ", mTelephonyManager.getCellLocation());
-        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
             addItem("SimCarrierId: ", mTelephonyManager.getSimCarrierId());
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            addItem("Meid: ", mTelephonyManager.getMeid());
-            addItem("ForbiddenPlans: ", Arrays.toString(mTelephonyManager.getForbiddenPlmns()));
-            addItem("Imei1: ", mTelephonyManager.getImei());
-            addItem("Imei2: ", mTelephonyManager.getImei(1));
-        }
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            addItem("DataNetworkType: ", mTelephonyManager.getDataNetworkType());
-        }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            addItem("DeviceId2: ", mTelephonyManager.getDeviceId(1));
             addItem("PhoneCount: ", mTelephonyManager.getPhoneCount());
         }
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            addItem("GroupIdLevel1: ", mTelephonyManager.getGroupIdLevel1());
+        addItem("PhoneType: ", mTelephonyManager.getPhoneType());
+        if (isLocationPermissionGranted()) {
+            addItem("Permission: ACCESS_COARSE_LOCATION", "label");
+            addItem("CellLocation: ", mTelephonyManager.getCellLocation());
         }
+        if (isReadPhoneStatePermissionGranted()) {
+            addItem("Permission: READ_PHONE_STATE", "label");
+            addItem("Line1Number: ", mTelephonyManager.getLine1Number());
+            addItem("SimSerialNumber: ", mTelephonyManager.getSimSerialNumber());
+            addItem("DeviceSoftwareVersion: ", mTelephonyManager.getDeviceSoftwareVersion());
+            addItem("SubscriberId: ", mTelephonyManager.getSubscriberId());
+            addItem("DeviceId1: ", mTelephonyManager.getDeviceId());
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                addItem("Meid: ", mTelephonyManager.getMeid());
+                addItem("ForbiddenPlans: ", Arrays.toString(mTelephonyManager.getForbiddenPlmns()));
+                addItem("Imei1: ", mTelephonyManager.getImei());
+                addItem("Imei2: ", mTelephonyManager.getImei(1));
+            }
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                addItem("DataNetworkType: ", mTelephonyManager.getDataNetworkType());
+            }
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                addItem("DeviceId2: ", mTelephonyManager.getDeviceId(1));
+            }
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                addItem("GroupIdLevel1: ", mTelephonyManager.getGroupIdLevel1());
+            }
+        }
+
+
     }
 
 
@@ -213,12 +216,23 @@ public class MainActivity extends AppCompatActivity {
         final int random3 = new Random().nextInt(256);
         View view = getLayoutInflater().inflate(R.layout.info_item, null);
         itemsContainer.addView(view);
-        Log.i(itemsContainer.getChildCount() + " : " + label + " added: " + value);
         TextView tvLabel = view.findViewById(R.id.tv_label);
         TextView tvValue = view.findViewById(R.id.tv_output);
         tvLabel.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
         tvValue.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
+
         tvLabel.setText(label);
+        if(value instanceof String){
+            if(((String) value).equalsIgnoreCase("label")) {
+                tvValue.setVisibility(View.GONE);
+                tvLabel.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
+                tvLabel.setGravity(Gravity.CENTER);
+                tvLabel.setBackground(null);
+                return;
+            }
+        }
         tvValue.setText("" + value);
     }
 
