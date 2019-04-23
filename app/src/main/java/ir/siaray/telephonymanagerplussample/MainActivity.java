@@ -69,21 +69,23 @@ public class MainActivity extends AppCompatActivity {
         btnRefreshAndroid.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         clearContainer();
         TelephonyManagerPlus telephonyManagerPlus = TelephonyManagerPlus.getInstance(this);
-        if (!isReadPhoneStatePermissionGranted()) return;
-        addItem("SimSerialNumber1:", telephonyManagerPlus.getSimSerialNumber1());
-        addItem("SimSerialNumber2:", telephonyManagerPlus.getSimSerialNumber2());
+        //if (!isReadPhoneStatePermissionGranted()) return;
         addItem("SimOperatorName1:", telephonyManagerPlus.getSimOperatorName1());
         addItem("SimOperatorName2:", telephonyManagerPlus.getSimOperatorName2());
         addItem("SimOperator1:", telephonyManagerPlus.getSimOperator1());
         addItem("SimOperator2:", telephonyManagerPlus.getSimOperator2());
-        addItem("Imei1:", telephonyManagerPlus.getImei1());
-        addItem("Imei2:", telephonyManagerPlus.getImei2());
-        addItem("SubscriberId1:", telephonyManagerPlus.getSubscriberId1());
-        addItem("SubscriberId2:", telephonyManagerPlus.getSubscriberId2());
         addItem("Mnc1:", telephonyManagerPlus.getMnc1());
         addItem("Mnc2:", telephonyManagerPlus.getMnc2());
         addItem("Mcc1:", telephonyManagerPlus.getMcc1());
         addItem("Mcc2:", telephonyManagerPlus.getMcc2());
+        addItem("Permission: READ_PHONE_STATE", "label");
+        addItem("SimSerialNumber1:", telephonyManagerPlus.getSimSerialNumber1());
+        addItem("SimSerialNumber2:", telephonyManagerPlus.getSimSerialNumber2());
+        addItem("Imei1:", telephonyManagerPlus.getImei1());
+        addItem("Imei2:", telephonyManagerPlus.getImei2());
+        addItem("SubscriberId1:", telephonyManagerPlus.getSubscriberId1());
+        addItem("SubscriberId2:", telephonyManagerPlus.getSubscriberId2());
+        addItem("Permission: ACCESS_COARSE_LOCATION", "label");
         addItem("Lac1:", telephonyManagerPlus.getLac1());
         addItem("Lac2:", telephonyManagerPlus.getLac2());
         addItem("Cid1:", telephonyManagerPlus.getCid1());
@@ -168,10 +170,7 @@ public class MainActivity extends AppCompatActivity {
             addItem("PhoneCount: ", mTelephonyManager.getPhoneCount());
         }
         addItem("PhoneType: ", mTelephonyManager.getPhoneType());
-        if (isLocationPermissionGranted()) {
-            addItem("Permission: ACCESS_COARSE_LOCATION", "label");
-            addItem("CellLocation: ", mTelephonyManager.getCellLocation());
-        }
+
         if (isReadPhoneStatePermissionGranted()) {
             addItem("Permission: READ_PHONE_STATE", "label");
             addItem("Line1Number: ", mTelephonyManager.getLine1Number());
@@ -197,7 +196,10 @@ public class MainActivity extends AppCompatActivity {
                 addItem("GroupIdLevel1: ", mTelephonyManager.getGroupIdLevel1());
             }
         }
-
+        if (isLocationPermissionGranted()) {
+            addItem("Permission: ACCESS_COARSE_LOCATION", "label");
+            addItem("CellLocation: ", mTelephonyManager.getCellLocation());
+        }
 
     }
 

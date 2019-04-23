@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.CellLocation;
 import android.telephony.SubscriptionInfo;
@@ -42,8 +43,14 @@ public class TelephonyManagerPlus {
     }
 
     private void findSimSlot2() {
-        String simSerialNumber1 = getSimSerialNumber1();
-        getTelephonyInfo(simSerialNumber1, TELEPHONY_MANAGER_SIM_SERIAL_NUMBER);
+        if (isPhoneStatePermissionGranted()) {
+            String simSerialNumber1 = getSimSerialNumber1();
+            getTelephonyInfo(simSerialNumber1, TELEPHONY_MANAGER_SIM_SERIAL_NUMBER, true);
+        } else {
+            String simOperator1 = getSimOperator1();
+            getTelephonyInfo(simOperator1, TELEPHONY_MANAGER_SIM_OPERATOR, true);
+        }
+
     }
 
     private boolean isPhoneStatePermissionGranted() {
@@ -66,7 +73,7 @@ public class TelephonyManagerPlus {
         return (new TelephonyManagerPlus(context));
     }
 
-    private String getTelephonyInfo(String sim1Value, String methodName) {
+    private String getTelephonyInfo(String sim1Value, String methodName, boolean indexSet) {
         try {
             for (int i = 0; i < 7; i++) {
                 String simValue2 = getTelephonyManagerValues(mContext
@@ -79,7 +86,7 @@ public class TelephonyManagerPlus {
                         && !simValue2.equals("-1")) {
                     if (simValue2.length() > 0 &&
                             !simValue2.equals(sim1Value)) {
-                        if (methodName.equals(TELEPHONY_MANAGER_SIM_SERIAL_NUMBER))
+                        if (indexSet)
                             simSlot2 = i;
                         return simValue2;
                     }
@@ -98,10 +105,11 @@ public class TelephonyManagerPlus {
                 , simSlot2);
         if (!TextUtils.isEmpty(telephonyManagerValue)
                 && telephonyManagerValue.equals(sim1Value))
-            return getTelephonyInfo(sim1Value, TELEPHONY_MANAGER_IMEI);
+            return getTelephonyInfo(sim1Value, TELEPHONY_MANAGER_IMEI, false);
         else return telephonyManagerValue;
     }
 
+    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSimSerialNumber1() {
         if (isPhoneStatePermissionGranted() && mTelephonyManager != null) {
             return mTelephonyManager.getSimSerialNumber();
@@ -109,6 +117,7 @@ public class TelephonyManagerPlus {
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
+    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSimSerialNumber2() {
         if (mSubscriptionInfoList != null
                 && mSubscriptionInfoList.size() > 1) {
@@ -160,6 +169,7 @@ public class TelephonyManagerPlus {
         return getCorrectSim2TelephonyInfo(getSimOperatorName1(), TELEPHONY_MANAGER_SIM_OPERATOR_NAME);
     }
 
+    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getImei1() {
         if ((isPhoneStatePermissionGranted() && mTelephonyManager != null)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -172,6 +182,7 @@ public class TelephonyManagerPlus {
     }
 
 
+    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getImei2() {
         if (isPhoneStatePermissionGranted()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -184,6 +195,10 @@ public class TelephonyManagerPlus {
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
+    @RequiresPermission(anyOf = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    })
     private CellLocation getCellLocation1() {
         if (isLocationPermissionGranted()
                 && mTelephonyManager != null)
@@ -192,6 +207,10 @@ public class TelephonyManagerPlus {
     }
 
 
+    @RequiresPermission(anyOf = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    })
     private String getCellLocation1ToString() {
         if (isLocationPermissionGranted()
                 && mTelephonyManager != null)
@@ -199,6 +218,10 @@ public class TelephonyManagerPlus {
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
+    @RequiresPermission(anyOf = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    })
     private String getCellLocation2() {
         Log.i("getCellLocation2");
         if (isLocationPermissionGranted()) {
@@ -214,31 +237,46 @@ public class TelephonyManagerPlus {
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
+    @RequiresPermission(anyOf = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    })
     public int getCid1() {
         CellLocation cellLocation1 = getCellLocation1();
-        if(cellLocation1!=null){
+        if (cellLocation1 != null) {
             //if (mTelephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM)
-                return ((GsmCellLocation)cellLocation1).getCid();
+            return ((GsmCellLocation) cellLocation1).getCid();
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
 
     }
 
-
+    @RequiresPermission(anyOf = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    })
     public int getCid2() {
         return getCellLocationValue(mContext, getCellLocation2(), Utils.CellLocationType.CID);
     }
 
+    @RequiresPermission(anyOf = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    })
     public int getLac1() {
         CellLocation cellLocation1 = getCellLocation1();
-        if(cellLocation1!=null){
-            return ((GsmCellLocation)cellLocation1).getLac();
+        if (cellLocation1 != null) {
+            return ((GsmCellLocation) cellLocation1).getLac();
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
     }
 
+    @RequiresPermission(anyOf = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    })
     public int getLac2() {
-        return getCellLocationValue(mContext,getCellLocation2(), Utils.CellLocationType.LAC);
+        return getCellLocationValue(mContext, getCellLocation2(), Utils.CellLocationType.LAC);
     }
 
     public int getMnc1() {
@@ -274,6 +312,7 @@ public class TelephonyManagerPlus {
         return Utils.getMccFromNetworkOperator(getSimOperator2());
     }
 
+    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSubscriberId1() {
         return (isPhoneStatePermissionGranted()
                 && mTelephonyManager != null) ?
@@ -281,6 +320,7 @@ public class TelephonyManagerPlus {
 
     }
 
+    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSubscriberId2() {
         return getCorrectSim2TelephonyInfo(getSubscriberId1(), TELEPHONY_MANAGER_SUBSCRIBERID);
     }
@@ -341,7 +381,7 @@ public class TelephonyManagerPlus {
     private List<SubscriptionInfo> getSubscriptionManager() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             //SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
-            SubscriptionManager subscriptionManager= (SubscriptionManager) mContext.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+            SubscriptionManager subscriptionManager = (SubscriptionManager) mContext.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             try {
                 if (!isPhoneStatePermissionGranted()) {
                     return null;
