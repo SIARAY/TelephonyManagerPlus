@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -24,17 +23,15 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.Random;
 
-import ir.siaray.telephonymanagerplus.Log;
 import ir.siaray.telephonymanagerplus.TelephonyManagerPlus;
 
 import static android.Manifest.permission.READ_PHONE_STATE;
-import static android.view.View.inflate;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewGroup itemsContainer;
-    private Button btnRefreshAndroid;
-    private Button btnRefreshLibrary;
+    private Button btnTelephonyManager;
+    private Button btnTelephonyManagerPlus;
     private boolean libraryButtonClicked = true;
 
     @Override
@@ -46,50 +43,53 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUi() {
         itemsContainer = findViewById(R.id.items_container);
-        btnRefreshAndroid = findViewById(R.id.btn_refresh_android);
-        btnRefreshLibrary = findViewById(R.id.btn_refresh_lib_info);
-        btnRefreshLibrary.setOnClickListener(new View.OnClickListener() {
+        btnTelephonyManager = findViewById(R.id.btn_tm_details);
+        btnTelephonyManagerPlus = findViewById(R.id.btn_tm_plus_details);
+        btnTelephonyManagerPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                printDeviceInfoByLibrary();
+                printTelephonyManagerPlusDetails();
             }
         });
-        btnRefreshAndroid.setOnClickListener(new View.OnClickListener() {
+        btnTelephonyManager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                printDeviceInfo();
-
+                printTelephonyManagerDetails();
             }
         });
-        printDeviceInfoByLibrary();
+        printTelephonyManagerPlusDetails();
     }
 
-    private void printDeviceInfoByLibrary() {
-        btnRefreshLibrary.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.selectedButton));
-        btnRefreshAndroid.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+    private void printTelephonyManagerPlusDetails() {
+        btnTelephonyManagerPlus.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.selectedButton));
+        btnTelephonyManager.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         clearContainer();
         TelephonyManagerPlus telephonyManagerPlus = TelephonyManagerPlus.getInstance(this);
-        //if (!isReadPhoneStatePermissionGranted()) return;
         addItem("SimOperatorName1:", telephonyManagerPlus.getSimOperatorName1());
         addItem("SimOperatorName2:", telephonyManagerPlus.getSimOperatorName2());
-        addItem("SimOperator1:", telephonyManagerPlus.getSimOperator1());
-        addItem("SimOperator2:", telephonyManagerPlus.getSimOperator2());
+        addItem("SimOperator1:", telephonyManagerPlus.getSimOperatorCode1());
+        addItem("SimOperator2:", telephonyManagerPlus.getSimOperatorCode2());
         addItem("Mnc1:", telephonyManagerPlus.getMnc1());
         addItem("Mnc2:", telephonyManagerPlus.getMnc2());
         addItem("Mcc1:", telephonyManagerPlus.getMcc1());
         addItem("Mcc2:", telephonyManagerPlus.getMcc2());
-        addItem("Permission: READ_PHONE_STATE", "label");
-        addItem("SimSerialNumber1:", telephonyManagerPlus.getSimSerialNumber1());
-        addItem("SimSerialNumber2:", telephonyManagerPlus.getSimSerialNumber2());
-        addItem("Imei1:", telephonyManagerPlus.getImei1());
-        addItem("Imei2:", telephonyManagerPlus.getImei2());
-        addItem("SubscriberId1:", telephonyManagerPlus.getSubscriberId1());
-        addItem("SubscriberId2:", telephonyManagerPlus.getSubscriberId2());
-        addItem("Permission: ACCESS_COARSE_LOCATION", "label");
-        addItem("Lac1:", telephonyManagerPlus.getLac1());
-        addItem("Lac2:", telephonyManagerPlus.getLac2());
-        addItem("Cid1:", telephonyManagerPlus.getCid1());
-        addItem("Cid2:", telephonyManagerPlus.getCid2());
+        if (isReadPhoneStatePermissionGranted()) {
+            addItem("Permission: READ_PHONE_STATE", "label");
+            addItem("DualSim:", telephonyManagerPlus.isDualSim());
+            addItem("SimSerialNumber1:", telephonyManagerPlus.getSimSerialNumber1());
+            addItem("SimSerialNumber2:", telephonyManagerPlus.getSimSerialNumber2());
+            addItem("Imei1:", telephonyManagerPlus.getImei1());
+            addItem("Imei2:", telephonyManagerPlus.getImei2());
+            addItem("SubscriberId1:", telephonyManagerPlus.getSubscriberId1());
+            addItem("SubscriberId2:", telephonyManagerPlus.getSubscriberId2());
+        }
+        if (isLocationPermissionGranted()) {
+            addItem("Permission: ACCESS_COARSE_LOCATION", "label");
+            addItem("Lac1:", telephonyManagerPlus.getLac1());
+            addItem("Lac2:", telephonyManagerPlus.getLac2());
+            addItem("Cid1:", telephonyManagerPlus.getCid1());
+            addItem("Cid2:", telephonyManagerPlus.getCid2());
+        }
     }
 
     private boolean isReadPhoneStatePermissionGranted() {
@@ -115,40 +115,44 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-   /* @Override
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (libraryButtonClicked)
-                        printDeviceInfoByLibrary();
-                    else printDeviceInfo();
+        try {
+            switch (requestCode) {
+                case 1: {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        if (libraryButtonClicked)
+                            printTelephonyManagerPlusDetails();
+                        else printTelephonyManagerDetails();
 
-                } else {
-                    Toast.makeText(this, "Need to READ_PHONE_STATE permission", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Need to READ_PHONE_STATE permission", Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 }
-                return;
-            }
-            case 2: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                case 2: {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    if (libraryButtonClicked)
-                        printDeviceInfoByLibrary();
-                    else printDeviceInfo();
+                        if (libraryButtonClicked)
+                            printTelephonyManagerPlusDetails();
+                        else printTelephonyManagerDetails();
 
-                } else {
-                    Toast.makeText(this, "Need to Location permission", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Need to Location permission", Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 }
-                return;
-            }
 
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-    }*/
+    }
 
-    private void printDeviceInfo() {
-        btnRefreshAndroid.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.selectedButton));
-        btnRefreshLibrary.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+    private void printTelephonyManagerDetails() {
+        btnTelephonyManager.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.selectedButton));
+        btnTelephonyManagerPlus.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         clearContainer();
         TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (mTelephonyManager == null) return;
@@ -203,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     private void clearContainer() {
         if (itemsContainer != null
                 && itemsContainer.getChildCount() > 0) {
@@ -212,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private <T> void addItem(String label, T value) {
-
         final int random1 = new Random().nextInt(256);
         final int random2 = new Random().nextInt(256);
         final int random3 = new Random().nextInt(256);
@@ -224,8 +226,8 @@ public class MainActivity extends AppCompatActivity {
         tvValue.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
 
         tvLabel.setText(label);
-        if(value instanceof String){
-            if(((String) value).equalsIgnoreCase("label")) {
+        if (value instanceof String) {
+            if (((String) value).equalsIgnoreCase("label")) {
                 tvValue.setVisibility(View.GONE);
                 tvLabel.setLayoutParams(new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,

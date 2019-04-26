@@ -26,6 +26,7 @@ import static ir.siaray.telephonymanagerplus.Constants.TELEPHONY_MANAGER_SIM_OPE
 import static ir.siaray.telephonymanagerplus.Constants.TELEPHONY_MANAGER_SIM_OPERATOR_NAME;
 import static ir.siaray.telephonymanagerplus.Constants.TELEPHONY_MANAGER_SIM_SERIAL_NUMBER;
 import static ir.siaray.telephonymanagerplus.Constants.TELEPHONY_MANAGER_SUBSCRIBERID;
+import static ir.siaray.telephonymanagerplus.TextUtils.isEmpty;
 import static ir.siaray.telephonymanagerplus.Utils.getCellLocationValue;
 import static ir.siaray.telephonymanagerplus.Utils.getTelephonyManagerValues;
 
@@ -47,7 +48,7 @@ public class TelephonyManagerPlus {
             String simSerialNumber1 = getSimSerialNumber1();
             getTelephonyInfo(simSerialNumber1, TELEPHONY_MANAGER_SIM_SERIAL_NUMBER, true);
         } else {
-            String simOperator1 = getSimOperator1();
+            String simOperator1 = getSimOperatorCode1();
             getTelephonyInfo(simOperator1, TELEPHONY_MANAGER_SIM_OPERATOR, true);
         }
 
@@ -81,7 +82,7 @@ public class TelephonyManagerPlus {
                         , methodName
                         , i);
 
-                if (!TextUtils.isEmpty(simValue2)
+                if (!isEmpty(simValue2)
                         && !simValue2.equals("0")
                         && !simValue2.equals("-1")) {
                     if (simValue2.length() > 0 &&
@@ -103,10 +104,18 @@ public class TelephonyManagerPlus {
                 , mTelephonyManager
                 , methodName
                 , simSlot2);
-        if (!TextUtils.isEmpty(telephonyManagerValue)
+        if (!isEmpty(telephonyManagerValue)
                 && telephonyManagerValue.equals(sim1Value))
             return getTelephonyInfo(sim1Value, TELEPHONY_MANAGER_IMEI, false);
         else return telephonyManagerValue;
+    }
+
+    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
+    public boolean isDualSim(){
+        if(!isEmpty(getImei2())){
+            return true;
+        }
+        return false;
     }
 
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
@@ -148,13 +157,13 @@ public class TelephonyManagerPlus {
         return getCorrectSim2TelephonyInfo(getNetworkOperator1(), TELEPHONY_MANAGER_NETWORK_OPERATOR_NAME);
     }*/
 
-    public String getSimOperator1() {
+    public String getSimOperatorCode1() {
         return mTelephonyManager.getSimOperator();
 
     }
 
-    public String getSimOperator2() {
-        return getCorrectSim2TelephonyInfo(getSimOperator1(), TELEPHONY_MANAGER_SIM_OPERATOR);
+    public String getSimOperatorCode2() {
+        return getCorrectSim2TelephonyInfo(getSimOperatorCode1(), TELEPHONY_MANAGER_SIM_OPERATOR);
     }
 
     public String getSimOperatorName1() {
@@ -229,7 +238,7 @@ public class TelephonyManagerPlus {
                     , mTelephonyManager
                     , TELEPHONY_MANAGER_CELL_LOCATION
                     , 0);
-            if (TextUtils.isEmpty(cellLocation1))
+            if (isEmpty(cellLocation1))
                 return getCorrectSim2TelephonyInfo(getCellLocation1ToString(), TELEPHONY_MANAGER_CELL_LOCATION_BY_SUB_ID);
             else
                 return getCorrectSim2TelephonyInfo(getCellLocation1ToString(), TELEPHONY_MANAGER_CELL_LOCATION);
@@ -284,7 +293,7 @@ public class TelephonyManagerPlus {
                 && mSubscriptionInfoList.size() > 0) {
             return mSubscriptionInfoList.get(0).getMnc();
         }
-        return Utils.getMncFromNetworkOperator(getSimOperator1());
+        return Utils.getMncFromNetworkOperator(getSimOperatorCode1());
     }
 
     public int getMnc2() {
@@ -292,7 +301,7 @@ public class TelephonyManagerPlus {
                 && mSubscriptionInfoList.size() > 1) {
             return mSubscriptionInfoList.get(1).getMnc();
         }
-        return Utils.getMncFromNetworkOperator(getSimOperator2());
+        return Utils.getMncFromNetworkOperator(getSimOperatorCode2());
     }
 
 
@@ -301,7 +310,7 @@ public class TelephonyManagerPlus {
                 && mSubscriptionInfoList.size() > 0) {
             return mSubscriptionInfoList.get(0).getMcc();
         }
-        return Utils.getMccFromNetworkOperator(getSimOperator1());
+        return Utils.getMccFromNetworkOperator(getSimOperatorCode1());
     }
 
     public int getMcc2() {
@@ -309,7 +318,7 @@ public class TelephonyManagerPlus {
                 && mSubscriptionInfoList.size() > 1) {
             return mSubscriptionInfoList.get(1).getMcc();
         }
-        return Utils.getMccFromNetworkOperator(getSimOperator2());
+        return Utils.getMccFromNetworkOperator(getSimOperatorCode2());
     }
 
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)

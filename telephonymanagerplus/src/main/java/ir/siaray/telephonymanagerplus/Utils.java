@@ -9,7 +9,7 @@ import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_GSM_CELL_ID_VALUE
 import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
 import static ir.siaray.telephonymanagerplus.Constants.DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
 
-public class Utils {
+class Utils {
 
     static String getTelephonyManagerValues(Context context
             , TelephonyManager telephony
@@ -134,19 +134,19 @@ public class Utils {
         return true;
     }
 
-    static int getMncFromNetworkOperator(String simOperatorCode){
-        if(isNumeric(simOperatorCode)){
-            if(simOperatorCode.length()>3){
-                return Integer.parseInt(simOperatorCode.substring(0,3));
+    static int getMncFromNetworkOperator(String simOperatorCode) {
+        if (isNumeric(simOperatorCode)) {
+            if (simOperatorCode.length() >= 5) {
+                return Integer.parseInt(simOperatorCode.substring(3));
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
     }
 
-    static int getMccFromNetworkOperator(String simOperatorCode){
-        if(isNumeric(simOperatorCode)){
-            if(simOperatorCode.length()>=5){
-                return Integer.parseInt(simOperatorCode.substring(3,5));
+    static int getMccFromNetworkOperator(String simOperatorCode) {
+        if (isNumeric(simOperatorCode)) {
+            if (simOperatorCode.length() > 3) {
+                return Integer.parseInt(simOperatorCode.substring(0, 3));
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
