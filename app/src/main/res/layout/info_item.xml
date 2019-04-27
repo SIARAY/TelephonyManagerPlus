@@ -19,7 +19,7 @@
         android:gravity="left|center_vertical"
         android:text="Device info:"
         android:textColor="#ffffff"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tv_output"
@@ -31,6 +31,6 @@
         android:gravity="left|center_vertical"
         android:text="Device info:"
         android:textColor="#ffffff"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
 </LinearLayout>

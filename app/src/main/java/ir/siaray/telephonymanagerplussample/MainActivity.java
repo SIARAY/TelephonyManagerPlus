@@ -1,6 +1,7 @@
 package ir.siaray.telephonymanagerplussample;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         printTelephonyManagerPlusDetails();
     }
 
+    @SuppressLint("MissingPermission")
     private void printTelephonyManagerPlusDetails() {
         btnTelephonyManagerPlus.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.selectedButton));
         btnTelephonyManager.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
@@ -150,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void printTelephonyManagerDetails() {
         btnTelephonyManager.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.selectedButton));
         btnTelephonyManagerPlus.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));

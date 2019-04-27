@@ -1,5 +1,5 @@
 ## TelephonyManagerPlus
-TelephonyManager for dualsim devices.
+TelephonyManager for dual sim devices.
 
 ##### Dependency
 
