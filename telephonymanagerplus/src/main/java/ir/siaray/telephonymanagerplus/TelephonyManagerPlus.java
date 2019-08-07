@@ -81,14 +81,18 @@ public class TelephonyManagerPlus {
                         , mTelephonyManager
                         , methodName
                         , i);
-
                 if (!isEmpty(simValue2)
                         && !simValue2.equals("0")
                         && !simValue2.equals("-1")) {
+                    if (methodName.equals(TELEPHONY_MANAGER_SIM_OPERATOR)
+                            && simValue2.length() > 6) {
+                        continue;
+                    }
                     if (simValue2.length() > 0 &&
                             !simValue2.equals(sim1Value)) {
-                        if (indexSet)
+                        if (indexSet) {
                             simSlot2 = i;
+                        }
                         return simValue2;
                     }
                 }
@@ -111,8 +115,8 @@ public class TelephonyManagerPlus {
     }
 
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
-    public boolean isDualSim(){
-        if(!isEmpty(getImei2())){
+    public boolean isDualSim() {
+        if (!isEmpty(getImei2())) {
             return true;
         }
         return false;
@@ -232,7 +236,6 @@ public class TelephonyManagerPlus {
             android.Manifest.permission.ACCESS_FINE_LOCATION
     })
     private String getCellLocation2() {
-        Log.i("getCellLocation2");
         if (isLocationPermissionGranted()) {
             String cellLocation1 = getTelephonyManagerValues(mContext
                     , mTelephonyManager

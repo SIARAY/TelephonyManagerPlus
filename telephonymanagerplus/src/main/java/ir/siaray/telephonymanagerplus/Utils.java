@@ -137,7 +137,11 @@ class Utils {
     static int getMncFromNetworkOperator(String simOperatorCode) {
         if (isNumeric(simOperatorCode)) {
             if (simOperatorCode.length() >= 5) {
-                return Integer.parseInt(simOperatorCode.substring(3));
+                try {
+                    return Integer.parseInt(simOperatorCode.substring(3));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
@@ -146,7 +150,11 @@ class Utils {
     static int getMccFromNetworkOperator(String simOperatorCode) {
         if (isNumeric(simOperatorCode)) {
             if (simOperatorCode.length() > 3) {
-                return Integer.parseInt(simOperatorCode.substring(0, 3));
+                try {
+                    return Integer.parseInt(simOperatorCode.substring(0, 3));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;

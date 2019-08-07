@@ -121,33 +121,35 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         try {
-            switch (requestCode) {
-                case 1: {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        if (libraryButtonClicked)
-                            printTelephonyManagerPlusDetails();
-                        else printTelephonyManagerDetails();
+            if (grantResults.length > 0) {
+                switch (requestCode) {
+                    case 1: {
+                        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                            if (libraryButtonClicked)
+                                printTelephonyManagerPlusDetails();
+                            else printTelephonyManagerDetails();
 
-                    } else {
-                        Toast.makeText(this, "Need to READ_PHONE_STATE permission", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Need to READ_PHONE_STATE permission", Toast.LENGTH_SHORT).show();
+                        }
+                        return;
                     }
-                    return;
-                }
-                case 2: {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    case 2: {
+                        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                        if (libraryButtonClicked)
-                            printTelephonyManagerPlusDetails();
-                        else printTelephonyManagerDetails();
+                            if (libraryButtonClicked)
+                                printTelephonyManagerPlusDetails();
+                            else printTelephonyManagerDetails();
 
-                    } else {
-                        Toast.makeText(this, "Need to Location permission", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Need to Location permission", Toast.LENGTH_SHORT).show();
+                        }
+                        return;
                     }
-                    return;
-                }
 
+                }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
