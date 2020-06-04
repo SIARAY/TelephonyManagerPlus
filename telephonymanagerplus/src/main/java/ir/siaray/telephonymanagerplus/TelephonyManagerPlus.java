@@ -4,14 +4,15 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.RequiresPermission;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.CellLocation;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.SubscriptionPlan;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+
+import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
 
 import java.util.List;
 
@@ -27,8 +28,10 @@ import static ir.siaray.telephonymanagerplus.Constants.TELEPHONY_MANAGER_SIM_OPE
 import static ir.siaray.telephonymanagerplus.Constants.TELEPHONY_MANAGER_SIM_SERIAL_NUMBER;
 import static ir.siaray.telephonymanagerplus.Constants.TELEPHONY_MANAGER_SUBSCRIBERID;
 import static ir.siaray.telephonymanagerplus.TextUtils.isEmpty;
+import static ir.siaray.telephonymanagerplus.Utils.getAppTargetSdkVersion;
 import static ir.siaray.telephonymanagerplus.Utils.getCellLocationValue;
 import static ir.siaray.telephonymanagerplus.Utils.getTelephonyManagerValues;
+import static ir.siaray.telephonymanagerplus.Utils.isLowerThanAndroidQ;
 
 public class TelephonyManagerPlus {
     private TelephonyManager mTelephonyManager;
@@ -81,6 +84,7 @@ public class TelephonyManagerPlus {
                         , mTelephonyManager
                         , methodName
                         , i);
+
                 if (!isEmpty(simValue2)
                         && !simValue2.equals("0")
                         && !simValue2.equals("-1")) {
@@ -124,8 +128,10 @@ public class TelephonyManagerPlus {
 
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSimSerialNumber1() {
-        if (isPhoneStatePermissionGranted() && mTelephonyManager != null) {
-            return mTelephonyManager.getSimSerialNumber();
+        if (isLowerThanAndroidQ(mContext)) {
+            if (isPhoneStatePermissionGranted() && mTelephonyManager != null) {
+                return mTelephonyManager.getSimSerialNumber();
+            }
         }
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
@@ -184,14 +190,15 @@ public class TelephonyManagerPlus {
 
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getImei1() {
-        if ((isPhoneStatePermissionGranted() && mTelephonyManager != null)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                return mTelephonyManager.getImei();
+        if (isLowerThanAndroidQ(mContext)) {
+            if ((isPhoneStatePermissionGranted() && mTelephonyManager != null)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    return mTelephonyManager.getImei();
+                }
+                return mTelephonyManager.getDeviceId();
             }
-            return mTelephonyManager.getDeviceId();
-        } else {
-            return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
         }
+        return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
 
@@ -213,9 +220,11 @@ public class TelephonyManagerPlus {
             android.Manifest.permission.ACCESS_FINE_LOCATION
     })
     private CellLocation getCellLocation1() {
-        if (isLocationPermissionGranted()
-                && mTelephonyManager != null)
-            return mTelephonyManager.getCellLocation();
+        if (isLowerThanAndroidQ(mContext)) {
+            if (isLocationPermissionGranted()
+                    && mTelephonyManager != null)
+                return mTelephonyManager.getCellLocation();
+        }
         return null;
     }
 
@@ -326,10 +335,13 @@ public class TelephonyManagerPlus {
 
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSubscriberId1() {
-        return (isPhoneStatePermissionGranted()
-                && mTelephonyManager != null) ?
-                mTelephonyManager.getSubscriberId() : DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
-
+        if (isLowerThanAndroidQ(mContext)) {
+            if (isPhoneStatePermissionGranted()
+                    && mTelephonyManager != null) {
+                return mTelephonyManager.getSubscriberId();
+            }
+        }
+        return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)

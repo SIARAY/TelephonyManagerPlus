@@ -7,10 +7,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
@@ -21,12 +17,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import java.util.Arrays;
 import java.util.Random;
 
 import ir.siaray.telephonymanagerplus.TelephonyManagerPlus;
 
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static ir.siaray.telephonymanagerplussample.Utils.isLowerThanAndroidQ;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,30 +69,30 @@ public class MainActivity extends AppCompatActivity {
         btnTelephonyManager.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         clearContainer();
         TelephonyManagerPlus telephonyManagerPlus = TelephonyManagerPlus.getInstance(this);
-        addItem("SimOperatorName1:", telephonyManagerPlus.getSimOperatorName1());
-        addItem("SimOperatorName2:", telephonyManagerPlus.getSimOperatorName2());
-        addItem("SimOperator1:", telephonyManagerPlus.getSimOperatorCode1());
-        addItem("SimOperator2:", telephonyManagerPlus.getSimOperatorCode2());
-        addItem("Mnc1:", telephonyManagerPlus.getMnc1());
-        addItem("Mnc2:", telephonyManagerPlus.getMnc2());
-        addItem("Mcc1:", telephonyManagerPlus.getMcc1());
-        addItem("Mcc2:", telephonyManagerPlus.getMcc2());
+        addItem("SimOperatorName1", telephonyManagerPlus.getSimOperatorName1());
+        addItem("SimOperatorName2", telephonyManagerPlus.getSimOperatorName2());
+        addItem("SimOperator1", telephonyManagerPlus.getSimOperatorCode1());
+        addItem("SimOperator2", telephonyManagerPlus.getSimOperatorCode2());
+        addItem("Mnc1", telephonyManagerPlus.getMnc1());
+        addItem("Mnc2", telephonyManagerPlus.getMnc2());
+        addItem("Mcc1", telephonyManagerPlus.getMcc1());
+        addItem("Mcc2", telephonyManagerPlus.getMcc2());
         if (isReadPhoneStatePermissionGranted()) {
             addItem("Permission: READ_PHONE_STATE", "label");
-            addItem("DualSim:", telephonyManagerPlus.isDualSim());
-            addItem("SimSerialNumber1:", telephonyManagerPlus.getSimSerialNumber1());
-            addItem("SimSerialNumber2:", telephonyManagerPlus.getSimSerialNumber2());
-            addItem("Imei1:", telephonyManagerPlus.getImei1());
-            addItem("Imei2:", telephonyManagerPlus.getImei2());
-            addItem("SubscriberId1:", telephonyManagerPlus.getSubscriberId1());
-            addItem("SubscriberId2:", telephonyManagerPlus.getSubscriberId2());
+            addItem("DualSim", telephonyManagerPlus.isDualSim());
+            addItem("SimSerialNumber1", telephonyManagerPlus.getSimSerialNumber1());
+            addItem("SimSerialNumber2", telephonyManagerPlus.getSimSerialNumber2());
+            addItem("Imei1", telephonyManagerPlus.getImei1());
+            addItem("Imei2", telephonyManagerPlus.getImei2());
+            addItem("SubscriberId1", telephonyManagerPlus.getSubscriberId1());
+            addItem("SubscriberId2", telephonyManagerPlus.getSubscriberId2());
         }
         if (isLocationPermissionGranted()) {
             addItem("Permission: ACCESS_COARSE_LOCATION", "label");
-            addItem("Lac1:", telephonyManagerPlus.getLac1());
-            addItem("Lac2:", telephonyManagerPlus.getLac2());
-            addItem("Cid1:", telephonyManagerPlus.getCid1());
-            addItem("Cid2:", telephonyManagerPlus.getCid2());
+            addItem("Lac1", telephonyManagerPlus.getLac1());
+            addItem("Lac2", telephonyManagerPlus.getLac2());
+            addItem("Cid1", telephonyManagerPlus.getCid1());
+            addItem("Cid2", telephonyManagerPlus.getCid2());
         }
     }
 
@@ -183,23 +185,41 @@ public class MainActivity extends AppCompatActivity {
         if (isReadPhoneStatePermissionGranted()) {
             addItem("Permission: READ_PHONE_STATE", "label");
             addItem("Line1Number: ", mTelephonyManager.getLine1Number());
-            addItem("SimSerialNumber: ", mTelephonyManager.getSimSerialNumber());
+            if (isLowerThanAndroidQ(this))
+                addItem("SimSerialNumber: ", mTelephonyManager.getSimSerialNumber());
+            else
+                addItem("SimSerialNumber: ", "Not available in android Q");
             addItem("DeviceSoftwareVersion: ", mTelephonyManager.getDeviceSoftwareVersion());
-            addItem("SubscriberId: ", mTelephonyManager.getSubscriberId());
-            addItem("DeviceId1: ", mTelephonyManager.getDeviceId());
-
+            if (isLowerThanAndroidQ(this))
+                addItem("SubscriberId: ", mTelephonyManager.getSubscriberId());
+            else
+                addItem("SubscriberId: ", "Not available in android Q");
+            if (isLowerThanAndroidQ(this))
+                addItem("DeviceId1: ", mTelephonyManager.getDeviceId());
+            else
+                addItem("DeviceId1: ", "Not available in android Q");
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                addItem("Meid: ", mTelephonyManager.getMeid());
                 addItem("ForbiddenPlans: ", Arrays.toString(mTelephonyManager.getForbiddenPlmns()));
-                addItem("Imei1: ", mTelephonyManager.getImei());
-                addItem("Imei2: ", mTelephonyManager.getImei(1));
+                if (isLowerThanAndroidQ(this)) {
+                    addItem("Meid: ", mTelephonyManager.getMeid());
+                    addItem("Imei1: ", mTelephonyManager.getImei());
+                    addItem("Imei2: ", mTelephonyManager.getImei(1));
+                }else{
+                    addItem("Meid: ", "Not available in android Q");
+                    addItem("Imei1: ", "Not available in android Q");
+                    addItem("Imei2: ", "Not available in android Q");
+                }
             }
 
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 addItem("DataNetworkType: ", mTelephonyManager.getDataNetworkType());
             }
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                addItem("DeviceId2: ", mTelephonyManager.getDeviceId(1));
+                if (isLowerThanAndroidQ(this)) {
+                    addItem("DeviceId2: ", mTelephonyManager.getDeviceId(1));
+                }else{
+                    addItem("DeviceId2: ", "Not available in android Q");
+                }
             }
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 addItem("GroupIdLevel1: ", mTelephonyManager.getGroupIdLevel1());
@@ -207,7 +227,11 @@ public class MainActivity extends AppCompatActivity {
         }
         if (isLocationPermissionGranted()) {
             addItem("Permission: ACCESS_COARSE_LOCATION", "label");
-            addItem("CellLocation: ", mTelephonyManager.getCellLocation());
+            if (isLowerThanAndroidQ(this)) {
+                addItem("CellLocation: ", mTelephonyManager.getCellLocation());
+            }else{
+                addItem("CellLocation: ", "Not available in android Q");
+            }
         }
 
     }
@@ -220,15 +244,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private <T> void addItem(String label, T value) {
-        final int random1 = new Random().nextInt(256);
-        final int random2 = new Random().nextInt(256);
-        final int random3 = new Random().nextInt(256);
+        final int random1 = new Random().nextInt(230);
+        final int random2 = new Random().nextInt(230);
+        final int random3 = new Random().nextInt(230);
+
         View view = getLayoutInflater().inflate(R.layout.info_item, null);
         itemsContainer.addView(view);
+        ViewGroup itemContainer = view.findViewById(R.id.item_container);
         TextView tvLabel = view.findViewById(R.id.tv_label);
         TextView tvValue = view.findViewById(R.id.tv_output);
-        tvLabel.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
-        tvValue.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
+        itemContainer.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
+        //tvLabel.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
+        //tvValue.setBackground(getBackgroundDrawable(Color.rgb(random1, random2, random3)));
 
         tvLabel.setText(label);
         if (value instanceof String) {
@@ -238,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT));
                 tvLabel.setGravity(Gravity.CENTER);
-                tvLabel.setBackground(null);
+                itemContainer.setBackground(null);
                 return;
             }
         }

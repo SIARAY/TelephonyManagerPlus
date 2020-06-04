@@ -1,6 +1,9 @@
 package ir.siaray.telephonymanagerplus;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 
 import java.lang.reflect.Method;
@@ -158,5 +161,30 @@ class Utils {
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
+    }
+
+    static int getAppTargetSdkVersion(Context context) {
+        int version = Build.VERSION_CODES.Q;
+        if (context != null) {
+            PackageManager pm = context.getPackageManager();
+            try {
+                if (pm != null) {
+                    ApplicationInfo applicationInfo = pm.getApplicationInfo(context.getPackageName(), 0);
+                    if (applicationInfo != null) {
+                        version = applicationInfo.targetSdkVersion;
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
+        return version;
+    }
+
+    static boolean isLowerThanAndroidQ(Context context) {
+        if (getAppTargetSdkVersion(context) < Build.VERSION_CODES.Q
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return true;
+        }
+        return false;
     }
 }
