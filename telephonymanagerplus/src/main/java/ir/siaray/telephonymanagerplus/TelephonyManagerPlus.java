@@ -132,6 +132,11 @@ public class TelephonyManagerPlus {
             if (isPhoneStatePermissionGranted() && mTelephonyManager != null) {
                 return mTelephonyManager.getSimSerialNumber();
             }
+        }else {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > 1) {
+                return mSubscriptionInfoList.get(0).getIccId();
+            }
         }
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
@@ -169,7 +174,6 @@ public class TelephonyManagerPlus {
 
     public String getSimOperatorCode1() {
         return mTelephonyManager.getSimOperator();
-
     }
 
     public String getSimOperatorCode2() {
@@ -396,11 +400,22 @@ public class TelephonyManagerPlus {
     }
 
 
-    public String getSimSerialNumber(int slot) {
+    private String getSimSerialNumber(int slot) {
         return getTelephonyManagerValues(mContext
                 , mTelephonyManager
                 , TELEPHONY_MANAGER_SIM_SERIAL_NUMBER
                 , slot);
+                Log.printTemp("getCardId: "+mSubscriptionInfoList.get(0).getCardId());
+                Log.printTemp("getMccString: "+mSubscriptionInfoList.get(0).getMccString());
+                Log.printTemp("getMncString: "+mSubscriptionInfoList.get(0).getMncString());
+                Log.printTemp("getCarrierId: "+mSubscriptionInfoList.get(0).getCarrierId());
+                Log.printTemp("getCountryIso: "+mSubscriptionInfoList.get(0).getCountryIso());
+                Log.printTemp("getCarrierName: "+mSubscriptionInfoList.get(0).getCarrierName());
+                Log.printTemp("getDisplayName: "+mSubscriptionInfoList.get(0).getDisplayName());
+                Log.printTemp("getSimSlotIndex: "+mSubscriptionInfoList.get(0).getSimSlotIndex());
+                Log.printTemp("getSubscriptionId: "+mSubscriptionInfoList.get(0).getSubscriptionId());
+                Log.printTemp("describeContents: "+mSubscriptionInfoList.get(0).describeContents());
+
     }*/
 
 
