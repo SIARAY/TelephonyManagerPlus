@@ -205,10 +205,12 @@ public class TelephonyManagerPlus {
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getImei2() {
         if (isPhoneStatePermissionGranted()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                return mTelephonyManager.getImei(1);
-            } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return mTelephonyManager.getDeviceId(1);
+            if(isLowerThanAndroidQ(mContext)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    return mTelephonyManager.getImei(1);
+                } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    return mTelephonyManager.getDeviceId(1);
+                }
             }
             return getCorrectSim2TelephonyInfo(getImei1(), TELEPHONY_MANAGER_IMEI);
         }
