@@ -4,7 +4,7 @@ TelephonyManager for dual sim devices.
 ##### Dependency
 
     dependencies {
-        implementation 'ir.siaray:telephonymanagerplus:1.0.5'
+        implementation 'ir.siaray:telephonymanagerplus:1.0.6'
     }
 
 ## Usage

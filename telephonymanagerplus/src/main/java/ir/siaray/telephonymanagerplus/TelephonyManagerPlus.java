@@ -44,7 +44,38 @@ public class TelephonyManagerPlus {
         mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         mSubscriptionInfoList = getSubscriptionManager();
         findSimSlot2();
+        //printSubscriptionInfo();
     }
+
+    /*private void printSubscriptionInfo() {
+        if (mSubscriptionInfoList != null) {
+            for (int slot = 0; slot < mSubscriptionInfoList.size(); slot++) {
+                //if(mSubscriptionInfoList.get(slot)==null)
+                //continue;
+                Log.printTemp("_________________________ " + mSubscriptionInfoList.size() + " ____________________________");
+                Log.printTemp("____________________    SLOT " + slot + "    ____________________");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Log.printTemp("getCardId: " + mSubscriptionInfoList.get(slot).getCardId());
+                    Log.printTemp("getMccString: " + mSubscriptionInfoList.get(slot).getMccString());
+                    Log.printTemp("getMncString: " + mSubscriptionInfoList.get(slot).getMncString());
+                    Log.printTemp("getCarrierId: " + mSubscriptionInfoList.get(slot).getCarrierId());
+                    Log.printTemp("getSubscriptionType: " + mSubscriptionInfoList.get(slot).getSubscriptionType());
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    Log.printTemp("getCountryIso: " + mSubscriptionInfoList.get(slot).getCountryIso());
+                    Log.printTemp("getCarrierName: " + mSubscriptionInfoList.get(slot).getCarrierName());
+                    Log.printTemp("getDisplayName: " + mSubscriptionInfoList.get(slot).getDisplayName());
+                    Log.printTemp("getSimSlotIndex: " + mSubscriptionInfoList.get(slot).getSimSlotIndex());
+                    Log.printTemp("getSubscriptionId: " + mSubscriptionInfoList.get(slot).getSubscriptionId());
+                    Log.printTemp("getMnc: " + mSubscriptionInfoList.get(slot).getMnc());
+                    Log.printTemp("getMcc: " + mSubscriptionInfoList.get(slot).getMcc());
+                    Log.printTemp("getNumber: " + mSubscriptionInfoList.get(slot).getNumber());
+                }
+                Log.printTemp("describeContents: " + mSubscriptionInfoList.get(slot).describeContents());
+            }
+
+        }
+    }*/
 
     private void findSimSlot2() {
         if (isPhoneStatePermissionGranted()) {
@@ -132,20 +163,24 @@ public class TelephonyManagerPlus {
             if (isPhoneStatePermissionGranted() && mTelephonyManager != null) {
                 return mTelephonyManager.getSimSerialNumber();
             }
-        }else {
-            if (mSubscriptionInfoList != null
-                    && mSubscriptionInfoList.size() > 1) {
-                return mSubscriptionInfoList.get(0).getIccId();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                if (mSubscriptionInfoList != null
+                        && mSubscriptionInfoList.size() > 0) {
+                    return mSubscriptionInfoList.get(0).getIccId();
+                }
             }
         }
         return DEFAULT_TELEPHONY_MANAGER_STRING_VALUE;
     }
 
-    @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
+    @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     public String getSimSerialNumber2() {
-        if (mSubscriptionInfoList != null
-                && mSubscriptionInfoList.size() > 1) {
-            return mSubscriptionInfoList.get(1).getIccId();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > 1) {
+                return mSubscriptionInfoList.get(1).getIccId();
+            }
         }
         return getCorrectSim2TelephonyInfo(getSimSerialNumber1(), TELEPHONY_MANAGER_SIM_SERIAL_NUMBER);
     }
@@ -177,7 +212,17 @@ public class TelephonyManagerPlus {
     }
 
     public String getSimOperatorCode2() {
-        return getCorrectSim2TelephonyInfo(getSimOperatorCode1(), TELEPHONY_MANAGER_SIM_OPERATOR);
+        if (isLowerThanAndroidQ(mContext)) {
+            return getCorrectSim2TelephonyInfo(getSimOperatorCode1(), TELEPHONY_MANAGER_SIM_OPERATOR);
+        }
+        int mnc = getMncFromSubscriptionList(1);
+        int mcc = getMccFromSubscriptionList(1);
+
+        if (mnc != DEFAULT_TELEPHONY_MANAGER_INT_VALUE
+                && mcc != DEFAULT_TELEPHONY_MANAGER_INT_VALUE) {
+            return "" + mcc + mnc;
+        }
+        return null;
     }
 
     public String getSimOperatorName1() {
@@ -185,9 +230,11 @@ public class TelephonyManagerPlus {
     }
 
     public String getSimOperatorName2() {
-        if (mSubscriptionInfoList != null
-                && mSubscriptionInfoList.size() > 1) {
-            return String.valueOf(mSubscriptionInfoList.get(1).getCarrierName());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > 1) {
+                return String.valueOf(mSubscriptionInfoList.get(1).getCarrierName());
+            }
         }
         return getCorrectSim2TelephonyInfo(getSimOperatorName1(), TELEPHONY_MANAGER_SIM_OPERATOR_NAME);
     }
@@ -209,7 +256,7 @@ public class TelephonyManagerPlus {
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getImei2() {
         if (isPhoneStatePermissionGranted()) {
-            if(isLowerThanAndroidQ(mContext)) {
+            if (isLowerThanAndroidQ(mContext)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     return mTelephonyManager.getImei(1);
                 } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -307,34 +354,61 @@ public class TelephonyManagerPlus {
     }
 
     public int getMnc1() {
-        if (mSubscriptionInfoList != null
-                && mSubscriptionInfoList.size() > 0) {
-            return mSubscriptionInfoList.get(0).getMnc();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > 0) {
+                return getMncFromSubscriptionList(0);
+            }
         }
         return Utils.getMncFromNetworkOperator(getSimOperatorCode1());
     }
 
     public int getMnc2() {
-        if (mSubscriptionInfoList != null
-                && mSubscriptionInfoList.size() > 1) {
-            return mSubscriptionInfoList.get(1).getMnc();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > 1) {
+                return getMncFromSubscriptionList(1);
+            }
         }
         return Utils.getMncFromNetworkOperator(getSimOperatorCode2());
     }
 
+    private int getMncFromSubscriptionList(int slot) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > slot) {
+                return mSubscriptionInfoList.get(slot).getMnc();
+            }
+        }
+        return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
+    }
+
+    private int getMccFromSubscriptionList(int slot) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > slot) {
+                return mSubscriptionInfoList.get(slot).getMcc();
+            }
+        }
+        return DEFAULT_TELEPHONY_MANAGER_INT_VALUE;
+    }
 
     public int getMcc1() {
-        if (mSubscriptionInfoList != null
-                && mSubscriptionInfoList.size() > 0) {
-            return mSubscriptionInfoList.get(0).getMcc();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > 0) {
+                return getMccFromSubscriptionList(0);
+            }
         }
         return Utils.getMccFromNetworkOperator(getSimOperatorCode1());
     }
 
     public int getMcc2() {
-        if (mSubscriptionInfoList != null
-                && mSubscriptionInfoList.size() > 1) {
-            return mSubscriptionInfoList.get(1).getMcc();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (mSubscriptionInfoList != null
+                    && mSubscriptionInfoList.size() > 1) {
+                return getMccFromSubscriptionList(1);
+            }
         }
         return Utils.getMccFromNetworkOperator(getSimOperatorCode2());
     }
